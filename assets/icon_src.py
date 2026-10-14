@@ -1,33 +1,18 @@
-"""Writes the arXiv Digest icon: an amber four-spike star on a graphite tile.
-favicon.svg (rounded tile) and touch.svg (full-bleed tile; Apple rounds touch icons itself)."""
-import math, os
+"""Writes the arXiv Digest icon: an amber chi (after arXiv's own logo) on a graphite tile.
+favicon.svg (rounded tile, browser tabs) and touch.svg (full-bleed tile; Apple rounds touch icons itself).
+Chosen 2026-10-14 from the options in icon_options.py (option 1)."""
+import os
 D = os.path.dirname(os.path.abspath(__file__))
 
 
-STARS = """<circle cx="14" cy="15" r="1.3" fill="#C0C5CC" opacity=".7"/>
-<circle cx="51" cy="49" r="1.1" fill="#C0C5CC" opacity=".55"/>
-<circle cx="49" cy="13" r=".9" fill="#C0C5CC" opacity=".45"/>"""
-
-
-def svg(rx, small=False):
-    """small=True: bolder spikes and core, no background stars -- for 16-32 px tab icons."""
-    c, R, r = (32, 27, 5.2) if small else (32, 25, 3.0)
-    pts = []
-    for k in range(8):
-        ang = math.pi / 2 - k * math.pi / 4
-        rad = R if k % 2 == 0 else r
-        pts.append(f"{c + rad * math.cos(ang):.2f},{c - rad * math.sin(ang):.2f}")
+def svg(rx):
     return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-<defs><radialGradient id="g" cx="50%" cy="50%" r="50%">
-<stop offset="0" stop-color="#F2A33A" stop-opacity=".55"/><stop offset="1" stop-color="#F2A33A" stop-opacity="0"/></radialGradient></defs>
 <rect width="64" height="64" rx="{rx}" fill="#16191D"/>
-<circle cx="32" cy="32" r="17" fill="url(#g)"/>
-{'' if small else STARS}
-<polygon points="{' '.join(pts)}" fill="#F2A33A"/>
-<circle cx="32" cy="32" r="{5.0 if small else 3.6}" fill="#FFF1DC"/>
+<line x1="47" y1="14" x2="17" y2="50" stroke="#ECEDEF" stroke-width="4.5" stroke-linecap="round"/>
+<path d="M14 15 C 24 14, 28 22, 32 32 C 36 42, 40 50, 51 49" fill="none" stroke="#F2A33A" stroke-width="7.5" stroke-linecap="round"/>
 </svg>
 """
 
 
-open(os.path.join(D, "favicon.svg"), "w").write(svg(14, small=True))
+open(os.path.join(D, "favicon.svg"), "w").write(svg(14))
 open(os.path.join(D, "touch.svg"), "w").write(svg(0))
