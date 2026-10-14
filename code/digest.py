@@ -108,8 +108,9 @@ function spy(){tick=false;let cur=0;
 addEventListener('scroll',()=>{if(!tick){tick=true;requestAnimationFrame(spy);}},{passive:true});spy();
 """
 
-ICONS = ("<link rel='icon' href='favicon-32.png' sizes='32x32' type='image/png'>"
-         "<link rel='icon' href='favicon.svg' type='image/svg+xml'><link rel='apple-touch-icon' href='apple-touch-icon.png'>")
+# file names carry the design ("chi"): browsers cache icons by URL, so a new design needs new names
+ICONS = ("<link rel='icon' href='icon-chi-32.png' sizes='32x32' type='image/png'>"
+         "<link rel='icon' href='icon-chi.svg' type='image/svg+xml'><link rel='apple-touch-icon' href='apple-touch-icon-chi.png'>")
 
 FONTS = ("<link rel='preconnect' href='https://fonts.googleapis.com'><link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>"
          "<link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Libre+Franklin:wght@400;600&display=swap'>")
