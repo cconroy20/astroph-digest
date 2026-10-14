@@ -88,10 +88,10 @@ summary::-webkit-details-marker{display:none}
 .rest li.p > a{padding:0}
 .rest summary{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 24px;margin-top:4px}
 .rest .fa{font-size:17px;color:var(--ink-2)}
-.rest .abt{font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.rest .abt{font-size:15px;font-weight:400;color:var(--ink-3);transition:color .15s}
 .rest .abt::after{content:" +";}
 .rest details[open] .abt::after{content:" \\2212";}
-.rest summary:hover .abt{text-decoration:underline;text-underline-offset:4px}
+.rest summary:hover .abt,.rest details[open] .abt{color:var(--accent)}
 .rest .ab{margin-top:10px}
 .rest .star{color:var(--accent);margin-right:8px;font-size:15px}
 footer{margin-top:64px;font-size:14px;color:var(--ink-3)}
@@ -167,7 +167,7 @@ def build(label, rows, sc, E=None):
         star = '<span class="star" title="in your Zotero">&#9733;</span>' if rows[i]["id"] in sc.lib_arxiv else ""
         parts.append(f'<li class="p"><a href="https://arxiv.org/abs/{rows[i]["id"]}">{star}{tex_html(rows[i]["title"])}</a>'
                      f'<details><summary><span class="fa">{first_author(rows[i]["authors"])}</span>'
-                     f'<span class="abt">Abstract</span></summary><div class="ab">{tex_html(rows[i]["abstract"])}</div></details></li>')
+                     f'<span class="abt">abstract</span></summary><div class="ab">{tex_html(rows[i]["abstract"])}</div></details></li>')
     parts.append("</ul></section>")
     parts.append(f"<footer>Ranked by {cfg['model']} against {int((sc.wt > 0).sum()):,} papers from your library and citations "
                  f"&middot; generated {datetime.now():%-d %b %Y, %H:%M}</footer>")

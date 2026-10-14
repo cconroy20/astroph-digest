@@ -68,10 +68,10 @@ summary::-webkit-details-marker{display:none}
 .rest li.p > a{padding:0}
 .rest summary{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 24px;margin-top:4px}
 .rest .fa{font-size:17px;color:var(--ink-2)}
-.rest .abt{font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.rest .abt{font-size:15px;font-weight:400;color:var(--ink-3);transition:color .15s}
 .rest .abt::after{content:" +";}
 .rest details[open] .abt::after{content:" \2212";}
-.rest summary:hover .abt{text-decoration:underline;text-underline-offset:4px}
+.rest summary:hover .abt,.rest details[open] .abt{color:var(--accent)}
 .rest .ab{margin-top:10px}
 .rest .star{color:var(--accent);margin-right:8px;font-size:15px}
 footer{margin-top:64px;font-size:14px;color:var(--ink-3)}
