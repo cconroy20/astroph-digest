@@ -108,6 +108,9 @@ function spy(){tick=false;let cur=0;
 addEventListener('scroll',()=>{if(!tick){tick=true;requestAnimationFrame(spy);}},{passive:true});spy();
 """
 
+ICONS = ("<link rel='icon' href='favicon-32.png' sizes='32x32' type='image/png'>"
+         "<link rel='icon' href='favicon.svg' type='image/svg+xml'><link rel='apple-touch-icon' href='apple-touch-icon.png'>")
+
 FONTS = ("<link rel='preconnect' href='https://fonts.googleapis.com'><link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>"
          "<link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Libre+Franklin:wght@400;600&display=swap'>")
 
@@ -172,7 +175,7 @@ def build(label, rows, sc, E=None):
     parts.append(f"<footer>Ranked by {cfg['model']} against {int((sc.wt > 0).sum()):,} papers from your library and citations "
                  f"&middot; generated {datetime.now():%-d %b %Y, %H:%M}</footer>")
     page = f"<!doctype html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>" \
-           f"<title>arXiv Digest · {esc(label)}</title>{FONTS}<style>{CSS}</style>{MATHJAX}</head><body><div class='wrap'>" \
+           f"<title>arXiv Digest · {esc(label)}</title>{ICONS}{FONTS}<style>{CSS}</style>{MATHJAX}</head><body><div class='wrap'>" \
            f"<nav class='side'>{masthead(label, len(rows))}<div class='toc'>{''.join(nav)}</div></nav><main>{''.join(parts)}</main></div>" \
            f"<script>{JS}</script></body></html>"
     return page, order, res, E
