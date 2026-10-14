@@ -27,7 +27,7 @@ def run(*cmd, cwd=ROOT):
 
 
 def notify(msg):
-    subprocess.run(["osascript", "-e", f'display notification "{msg}" with title "Astro-Ph Digest"'], check=False)
+    subprocess.run(["osascript", "-e", f'display notification "{msg}" with title "arXiv Digest"'], check=False)
 
 
 def main():

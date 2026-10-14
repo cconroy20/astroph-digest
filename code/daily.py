@@ -24,7 +24,7 @@ def log(msg):
 
 def notify(msg):
     if LOCAL:
-        subprocess.run(["osascript", "-e", f'display notification "{msg}" with title "Astro-Ph Digest"'], check=False)
+        subprocess.run(["osascript", "-e", f'display notification "{msg}" with title "arXiv Digest"'], check=False)
 
 
 def write_archive(site):
@@ -32,8 +32,8 @@ def write_archive(site):
     days = sorted((f[:-5] for f in os.listdir(site) if re.fullmatch(r"\d{4}-\d{2}-\d{2}\.html", f)), reverse=True)
     items = "".join(f'<li><a href="{d}.html">{datetime.strptime(d, "%Y-%m-%d"):%a %-d %b %Y}</a></li>' for d in days)
     page = (f"<!doctype html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>"
-            f"<title>Astro-Ph Digest archive</title>{FONTS}<style>{CSS}</style></head><body><div class='wrap'>"
-            f"<nav class='side'><div class='mast'><div class='name'>Astro-Ph Digest</div><div class='when'>Archive</div>"
+            f"<title>arXiv Digest archive</title>{FONTS}<style>{CSS}</style></head><body><div class='wrap'>"
+            f"<nav class='side'><div class='mast'><div class='name'>arXiv Digest</div><div class='when'>Archive</div>"
             f"<div class='count'><a class='arch' href='index.html'>Latest digest</a></div></div></nav>"
             f"<main><ul class='rest'>{items}</ul></main></div></body></html>")
     open(os.path.join(site, "archive.html"), "w").write(page)

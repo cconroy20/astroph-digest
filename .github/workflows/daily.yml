@@ -4,6 +4,9 @@ on:
   schedule:
     - cron: "30 10 * * 1-5"   # 10:30 UTC = 6:30 am EDT / 5:30 am EST; arXiv announces at 8 pm ET the evening before
   workflow_dispatch:           # "Run workflow" button for a manual run
+  push:                        # republish when the pages are edited by hand
+    branches: [main]
+    paths: ["docs/**"]
 
 permissions:
   contents: write

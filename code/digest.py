@@ -129,7 +129,7 @@ def card(r, aid):
 def masthead(label, n):
     m = re.match(r"(\w+), (\d+) (\w+) (\d{4})", label)
     when = f"{m.group(1)[:3]} {m.group(2)} {m.group(3)[:3]} {m.group(4)}" if m else esc(label)
-    return (f'<div class="mast"><div class="name">Astro-Ph Digest</div><div class="when">{when}</div>'
+    return (f'<div class="mast"><div class="name">arXiv Digest</div><div class="when">{when}</div>'
             f'<div class="count">{n} new submissions</div><a class="arch" href="archive.html">Past digests</a></div>')
 
 
@@ -162,7 +162,7 @@ def build(label, rows, sc, E=None):
     parts.append(f"<footer>Ranked by {cfg['model']} against {int((sc.wt > 0).sum()):,} papers from your library and citations "
                  f"&middot; generated {datetime.now():%-d %b %Y, %H:%M}</footer>")
     page = f"<!doctype html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>" \
-           f"<title>Astro-Ph Digest · {esc(label)}</title>{FONTS}<style>{CSS}</style>{MATHJAX}</head><body><div class='wrap'>" \
+           f"<title>arXiv Digest · {esc(label)}</title>{FONTS}<style>{CSS}</style>{MATHJAX}</head><body><div class='wrap'>" \
            f"<nav class='side'>{masthead(label, len(rows))}<div class='toc'>{''.join(nav)}</div></nav><main>{''.join(parts)}</main></div>" \
            f"<script>{JS}</script></body></html>"
     return page, order, res, E

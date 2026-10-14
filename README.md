@@ -1,4 +1,4 @@
-# Astro-Ph Digest
+# arXiv Digest
 
 Each weekday morning this repository's GitHub Actions job reads the day's new astro-ph submissions
 (arxiv.org/list/astro-ph/new, new submissions only), ranks them against Charlie Conroy's reading
