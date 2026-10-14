@@ -69,11 +69,12 @@ main{min-width:0}
 .cm{margin:4px 0 0;font-size:17px;line-height:1.45;color:var(--note)}
 .act{position:relative;margin-top:12px;font-size:14px;font-weight:600;letter-spacing:.14em;text-transform:uppercase}
 .act a.pdf{position:absolute;left:150px;top:0;color:var(--accent);text-decoration:none}
-.act a.pdf:hover,summary:hover{text-decoration:underline;text-underline-offset:4px}
-summary{display:inline-block;list-style:none;cursor:pointer;color:var(--accent);white-space:nowrap}
+.act a.pdf:hover,.act summary:hover{text-decoration:underline;text-underline-offset:4px}
+summary{list-style:none;cursor:pointer}
 summary::-webkit-details-marker{display:none}
-summary::after{content:" +";}
-details[open] summary::after{content:" \\2212";}
+.act summary{display:inline-block;color:var(--accent);white-space:nowrap}
+.act summary::after{content:" +";}
+.act details[open] summary::after{content:" \\2212";}
 .ab{margin-top:12px;font-weight:400;font-size:19px;line-height:1.62;letter-spacing:0;text-transform:none;color:var(--ink);max-width:80em}
 
 /* the rest of the listing */
@@ -81,9 +82,17 @@ details[open] summary::after{content:" \\2212";}
 .others .sect{color:var(--ink-2)}
 .rest{list-style:none;margin:18px 0 0;padding:0;border-top:2px solid var(--ink)}
 .rest li{border-bottom:1px solid var(--rule)}
-.rest a{display:block;padding:12px 0;font-family:var(--title);font-size:20px;font-weight:600;line-height:1.32;letter-spacing:0;color:var(--ink);text-decoration:none;transition:color .15s}
-.rest a:hover{color:var(--accent)}
-.rest .fa{display:block;margin-top:4px;font-family:var(--sans);font-size:17px;font-weight:400;letter-spacing:0;color:var(--ink-2)}
+.rest li > a{display:block;padding:12px 0;font-family:var(--title);font-size:20px;font-weight:600;line-height:1.32;letter-spacing:0;color:var(--ink);text-decoration:none;transition:color .15s}
+.rest li > a:hover{color:var(--accent)}
+.rest li.p{padding:12px 0}
+.rest li.p > a{padding:0}
+.rest summary{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 24px;margin-top:4px}
+.rest .fa{font-size:17px;color:var(--ink-2)}
+.rest .abt{font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.rest .abt::after{content:" +";}
+.rest details[open] .abt::after{content:" \\2212";}
+.rest summary:hover .abt{text-decoration:underline;text-underline-offset:4px}
+.rest .ab{margin-top:10px}
 .rest .star{color:var(--accent);margin-right:8px;font-size:15px}
 footer{margin-top:64px;font-size:14px;color:var(--ink-3)}
 """
@@ -156,8 +165,9 @@ def build(label, rows, sc, E=None):
     nav.append('<a class="last" href="#other">Other submissions</a>')
     for i in rest:
         star = '<span class="star" title="in your Zotero">&#9733;</span>' if rows[i]["id"] in sc.lib_arxiv else ""
-        parts.append(f'<li><a href="https://arxiv.org/abs/{rows[i]["id"]}">{star}{tex_html(rows[i]["title"])}'
-                     f'<span class="fa">{first_author(rows[i]["authors"])}</span></a></li>')
+        parts.append(f'<li class="p"><a href="https://arxiv.org/abs/{rows[i]["id"]}">{star}{tex_html(rows[i]["title"])}</a>'
+                     f'<details><summary><span class="fa">{first_author(rows[i]["authors"])}</span>'
+                     f'<span class="abt">Abstract</span></summary><div class="ab">{tex_html(rows[i]["abstract"])}</div></details></li>')
     parts.append("</ul></section>")
     parts.append(f"<footer>Ranked by {cfg['model']} against {int((sc.wt > 0).sum()):,} papers from your library and citations "
                  f"&middot; generated {datetime.now():%-d %b %Y, %H:%M}</footer>")
