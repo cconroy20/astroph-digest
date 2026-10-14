@@ -1,6 +1,8 @@
 """Writes the arXiv Digest icon: an amber chi (after arXiv's own logo) on a graphite tile.
 favicon.svg (rounded tile, browser tabs) and touch.svg (full-bleed tile; Apple rounds touch icons itself).
-Chosen 2026-10-14 from the options in icon_options.py (option 1)."""
+Chosen 2026-10-14 from the options in icon_options.py (option 1).
+Published as docs/icon-chi.svg, docs/icon-chi-32.png, docs/apple-touch-icon-chi.png. A NEW design needs NEW file
+names (and the ICONS links in digest.py updated): browsers, Safari above all, cache icons by URL."""
 import os
 D = os.path.dirname(os.path.abspath(__file__))
 
