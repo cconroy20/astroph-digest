@@ -1,0 +1,21 @@
+.venv/
+__pycache__/
+.DS_Store
+# large or local-only inputs (rebuilt by the quarterly update on the Mac)
+data/oai/
+data/astroph.json
+data/bakeoff.json
+data/tests.json
+data/library_zotero.json
+data/library.json
+data/my_papers_ads.json
+data/cited_ads.json
+data/*.log
+models/*/bakeoff.npy
+models/*/ref_scores.npy
+models/bge/
+models/specter2/
+models/qwen3/
+# local test output
+digests/
+preview/

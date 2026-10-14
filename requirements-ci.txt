@@ -1,0 +1,5 @@
+# packages for the daily GitHub Actions job (torch comes from the CPU-only index; see the workflow)
+sentence-transformers==5.7.0
+transformers==4.57.6
+numpy==2.5.4
+requests==2.34.2

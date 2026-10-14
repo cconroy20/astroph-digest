@@ -1,0 +1,20 @@
+{
+ "model": "indus",
+ "method": "kde",
+ "tau": 0.02,
+ "alpha_auth": 0.7,
+ "beta_field": 1.0,
+ "w": {
+  "lib": 1.0,
+  "own": 1.0,
+  "cited": 0.25
+ },
+ "other_sim": 0.5,
+ "display_groups": {
+  "Wake": "MW Halo",
+  "Stellar Mass Loss": "Stellar Evolution",
+  "Stellar Pop": "Stellar Populations",
+  "Other": "Miscellaneous"
+ },
+ "per_day": 10
+}
