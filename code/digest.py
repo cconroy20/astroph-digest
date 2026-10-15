@@ -65,9 +65,8 @@ a:focus-visible,.tg:focus-visible{outline:2px solid var(--accent);outline-offset
 .act a.pdf:hover,.tg:hover{text-decoration:underline;text-underline-offset:4px}
 .act .dtag{display:none;margin-left:auto;font-weight:500;color:var(--ink-3)}
 .catchup .act .dtag{display:block}
-.vote{display:none;margin-left:auto;gap:18px}
+.vote{display:none;gap:6px;margin-right:-8px}
 .can-vote .vote{display:flex}
-.can-vote.catchup .act .dtag{margin-left:28px}
 .vb{appearance:none;background:none;border:0;padding:0 2px;margin:0;font-size:15px;line-height:1;color:var(--ink-3);cursor:pointer;transition:color .15s}
 .vb:hover{color:var(--ink)}
 .vu.on{color:var(--accent)}
@@ -267,7 +266,7 @@ def card(r, day_tag="", day_iso=""):
 <h4 class="t"><a href="https://arxiv.org/abs/{r['id']}">{tex_html(r['title'])}</a></h4>
 <p class="au">{authors_html(r['authors'])}</p>
 {cm}
-<div class="act"><button class="tg" data-p="ab">Abstract</button>{fbtn}<a class="pdf" href="https://arxiv.org/pdf/{r['id']}">PDF</a><span class="vote"><button class="vb vu" title="More like this" aria-label="Upvote">&#9650;</button><button class="vb vd" title="Less like this" aria-label="Downvote">&#9660;</button></span><span class="dtag">{day_tag}</span></div>
+<div class="act"><span class="vote"><button class="vb vu" title="More like this" aria-label="Upvote">&#9650;</button><button class="vb vd" title="Less like this" aria-label="Downvote">&#9660;</button></span><button class="tg" data-p="ab">Abstract</button>{fbtn}<a class="pdf" href="https://arxiv.org/pdf/{r['id']}">PDF</a><span class="dtag">{day_tag}</span></div>
 <div class="ab" hidden>{tex_html(r["abstract"])}</div>
 {fpanel}
 </article>"""
