@@ -74,6 +74,8 @@ def main():
     if os.path.exists(path) and "--force" not in sys.argv:
         log(f"{day}: already done, nothing new")
         return
+    from figures import add_figures
+    add_figures(rows, log=log)  # top three figures per paper from arXiv's HTML version (~1 s per paper)
     from digest import build
     from scorer import Scorer
     cfg = json.load(open(os.path.join(ROOT, "models", "config.json")))

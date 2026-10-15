@@ -17,6 +17,10 @@ sc = Scorer(json.load(open(os.path.join(ROOT, "models", "config.json"))))
 days = sorted(os.path.basename(f)[:-5] for f in glob.glob(os.path.join(ARCH, "*.json")))
 for day in days:
     rows = json.load(open(os.path.join(ARCH, day + ".json")))
+    if any("figs" not in r for r in rows):  # days archived before figures existed
+        from figures import add_figures
+        add_figures(rows)
+        json.dump(rows, open(os.path.join(ARCH, day + ".json"), "w"))
     E = np.load(os.path.join(ARCH, day + ".npy")).astype(np.float32)
     label = datetime.strptime(day, "%Y-%m-%d").strftime("%A, %-d %B %Y")
     page, order, res, E, items = build(label, rows, sc, E=E)

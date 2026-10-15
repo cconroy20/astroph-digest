@@ -34,7 +34,7 @@ CSS = """
 body{margin:0;background:var(--paper);color:var(--ink);font:400 19px/1.6 var(--sans);-webkit-font-smoothing:antialiased;font-kerning:normal}
 ::selection{background:var(--accent);color:var(--paper)}
 a{color:inherit}
-a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+a:focus-visible,.tg:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .wrap{max-width:1320px;margin:0 auto;padding-inline:4vw;padding-block:48px 120px}
 
 /* masthead */
@@ -56,16 +56,27 @@ a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-of
 .t a:hover{background-size:100% 2px}
 .au{margin:10px 0 0;font-size:19.5px;line-height:1.45;color:var(--ink-2)}
 .cm{margin:4px 0 0;font-size:18.4px;line-height:1.45;color:var(--note)}
-.act{position:relative;margin-top:12px;font-size:14px;font-weight:600;letter-spacing:.14em;text-transform:uppercase}
-.act a.pdf{position:absolute;left:150px;top:0;color:var(--accent);text-decoration:none}
-.act a.pdf:hover,.act summary:hover{text-decoration:underline;text-underline-offset:4px}
-summary{list-style:none;cursor:pointer}
-summary::-webkit-details-marker{display:none}
-.act summary{display:inline-block;color:var(--accent);white-space:nowrap}
-.act summary::after{content:" +";}
-.act details[open] summary::after{content:" \\2212";}
-.act .dtag{display:none;position:absolute;right:0;top:0;font-weight:500;color:var(--ink-3)}
+[hidden]{display:none!important}
+.act{display:flex;align-items:baseline;gap:0 40px;margin-top:12px;font-size:14px;font-weight:600;letter-spacing:.14em;text-transform:uppercase}
+.act a.pdf,.tg{color:var(--accent);text-decoration:none}
+.tg{appearance:none;background:none;border:0;padding:0;margin:0;font:inherit;letter-spacing:inherit;text-transform:inherit;cursor:pointer}
+.tg::after{content:" +";}
+.tg.on::after{content:" \\2212";}
+.act a.pdf:hover,.tg:hover{text-decoration:underline;text-underline-offset:4px}
+.act .dtag{display:none;margin-left:auto;font-weight:500;color:var(--ink-3)}
 .catchup .act .dtag{display:block}
+.fg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;margin-top:18px}
+.fig{margin:0;cursor:zoom-in}
+.fig .im{height:250px;display:flex;gap:6px;align-items:center;justify-content:center;padding:10px;background:#fff;border:1px solid var(--rule);transition:border-color .15s}
+.fig:hover .im{border-color:var(--ink-3)}
+.fig .im img{min-width:0;max-width:100%;max-height:100%;object-fit:contain}
+.fig figcaption{margin-top:8px;font-size:15px;line-height:1.45;color:var(--ink-2)}
+.fig figcaption b,.lbin .cap b{color:var(--ink);font-weight:600}
+.lb{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;padding:3vh 3vw;background:rgba(12,14,18,.82);cursor:zoom-out}
+.lbin{max-width:min(1500px,94vw);max-height:94vh;overflow:auto;padding:22px 26px;background:var(--paper);cursor:auto}
+.lbin .ims{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:12px;background:#fff}
+.lbin .ims img{max-width:100%;max-height:72vh;object-fit:contain}
+.lbin .cap{margin:14px 0 0;font-size:17px;line-height:1.55}
 .ab{margin-top:12px;font-weight:400;font-size:19px;line-height:1.62;letter-spacing:0;text-transform:none;color:var(--ink);max-width:80em}
 
 /* archive page */
@@ -74,6 +85,23 @@ summary::-webkit-details-marker{display:none}
 .rest li > a{display:block;padding:12px 0;font-family:var(--title);font-size:20px;font-weight:600;line-height:1.32;color:var(--ink);text-decoration:none;transition:color .15s}
 .rest li > a:hover{color:var(--accent)}
 footer{margin-top:64px;font-size:14px;color:var(--ink-3)}
+"""
+
+PAGE_JS = """
+(function(){
+ function load(el){el.querySelectorAll('img[data-src]').forEach(function(i){i.src=i.getAttribute('data-src');i.removeAttribute('data-src')})}
+ function typeset(el){var M=window.MathJax; if(M&&M.typesetPromise) M.typesetPromise([el])}
+ document.addEventListener('click',function(e){
+  var t=e.target.closest('.tg');
+  if(t){var p=t.closest('.entry').querySelector('.'+t.getAttribute('data-p')), open=p.hidden;
+   p.hidden=!open; t.classList.toggle('on',open); if(open) load(p); return}
+  var f=e.target.closest('.fig');
+  if(f){var lb=document.createElement('div'); lb.className='lb';
+   lb.innerHTML='<div class="lbin">'+f.querySelector('.full').innerHTML+'</div>'; document.body.appendChild(lb); load(lb); typeset(lb); return}
+  var lb=e.target.closest('.lb'); if(lb&&!e.target.closest('.lbin')) lb.remove();
+ });
+ document.addEventListener('keydown',function(e){if(e.key==='Escape'){var lb=document.querySelector('.lb'); if(lb) lb.remove()}});
+})();
 """
 
 CATCHUP_JS = """
@@ -121,13 +149,38 @@ def authors_html(authors):
     return ", ".join(esc(n) for n in names[:5]) + (f" +{extra}" if extra > 0 else "")
 
 
+def short_caption(cap, n=170):
+    """First sentence of a caption (never cut inside $...$), at most about n characters."""
+    for m in re.finditer(r"\. ", cap):
+        if m.start() > 30 and cap[:m.start()].count("$") % 2 == 0:
+            cap = cap[:m.start() + 1]
+            break
+    if len(cap) > n:
+        cut = max((i for i in range(30, n) if cap[i] == " " and cap[:i].count("$") % 2 == 0), default=None)
+        cap = cap[:cut] + " \u2026" if cut else cap
+    return cap
+
+
+def figure_html(f):
+    thumbs = "".join(f'<img data-src="{esc(u)}" alt="">' for u in f["imgs"][:4])
+    full = "".join(f'<img data-src="{esc(u)}" alt="">' for u in f["imgs"])
+    n = esc(f["n"])
+    return (f'<figure class="fig"><div class="im">{thumbs}</div><figcaption><b>{n}.</b> {tex_html(short_caption(f["cap"]))}</figcaption>'
+            f'<div class="full" hidden><div class="ims">{full}</div><p class="cap"><b>{n}.</b> {tex_html(f["cap"])}</p></div></figure>')
+
+
 def card(r, day_tag=""):
     cm = f'<p class="cm">{esc(r["comments"])}</p>' if r.get("comments") else ""
+    figs = r.get("figs") or []
+    fbtn = '<button class="tg" data-p="fg">Figures</button>' if figs else ""
+    fpanel = f'<div class="fg" hidden>{"".join(figure_html(f) for f in figs)}</div>' if figs else ""
     return f"""<article class="entry">
 <h4 class="t"><a href="https://arxiv.org/abs/{r['id']}">{tex_html(r['title'])}</a></h4>
 <p class="au">{authors_html(r['authors'])}</p>
 {cm}
-<div class="act"><details><summary>Abstract</summary><div class="ab">{tex_html(r["abstract"])}</div></details><a class="pdf" href="https://arxiv.org/pdf/{r['id']}">PDF</a><span class="dtag">{day_tag}</span></div>
+<div class="act"><button class="tg" data-p="ab">Abstract</button>{fbtn}<a class="pdf" href="https://arxiv.org/pdf/{r['id']}">PDF</a><span class="dtag">{day_tag}</span></div>
+<div class="ab" hidden>{tex_html(r["abstract"])}</div>
+{fpanel}
 </article>"""
 
 
@@ -156,7 +209,7 @@ def build(label, rows, sc, E=None):
                  f"&middot; generated {datetime.now():%-d %b %Y, %H:%M}</footer>")
     page = f"<!doctype html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>" \
            f"<title>arXiv Digest · {esc(label)}</title>{ICONS}{FONTS}<style>{CSS}</style>{MATHJAX}</head><body data-date='{day:%Y-%m-%d}'>" \
-           f"<div class='wrap'>{''.join(parts)}</div><script>{CATCHUP_JS}</script></body></html>"
+           f"<div class='wrap'>{''.join(parts)}</div><script>{PAGE_JS}{CATCHUP_JS}</script></body></html>"
     return page, order, res, E, items
 
 
