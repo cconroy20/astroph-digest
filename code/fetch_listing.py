@@ -1,8 +1,11 @@
 """Fetch the current astro-ph 'New submissions' listing (no cross-lists, no replacements).
 
+The page is validated (section present, entry count matches arXiv's own "showing N of N"); a failure raises,
+and daily.py retries.
+
 Returns (listing_date_str, rows) where rows look like data/astroph.json rows.
 """
-import html, re, requests
+import html, re, time, requests
 
 URL = "https://arxiv.org/list/astro-ph/new?skip=0&show=2000"
 
@@ -16,6 +19,10 @@ def strip(s):
 def parse(page):
     m = re.search(r"Showing new listings for ([^<]+)</h3>", page)
     date = m.group(1).strip() if m else "?"
+    m = re.search(r"New submissions \(showing (\d+) of (\d+) entries\)", page)
+    if not m:  # arXiv's CDN can hold a copy cached mid-announcement that lacks this section
+        raise ValueError("listing page has no New submissions section (stale cached copy?)")
+    n_expected = int(m.group(2))
     i = page.index("New submissions")
     j = page.find("Cross submissions", i)
     if j < 0:
@@ -34,11 +41,14 @@ def parse(page):
         rows.append({"id": aid, "title": title, "authors": authors, "abstract": strip(ab.group(1)) if ab else "",
                      "comments": strip(cm.group(1)) if cm else "", "cats": cats,
                      "primary": cats[0] if cats else ""})
+    if len(rows) != n_expected:
+        raise ValueError(f"parsed {len(rows)} new submissions, page says {n_expected}")
     return date, rows
 
 
 def fetch():
-    r = requests.get(URL, timeout=120, headers={"User-Agent": "arxivsort (personal digest)"})
+    # a never-seen query string forces a fresh page from arXiv instead of a possibly partial cached copy
+    r = requests.get(f"{URL}&_={int(time.time())}", timeout=120, headers={"User-Agent": "arxivsort (personal digest)"})
     r.raise_for_status()
     return parse(r.text)
 

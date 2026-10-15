@@ -2,7 +2,7 @@ name: Daily digest
 
 on:
   schedule:
-    - cron: "30 10 * * 1-5"   # 10:30 UTC = 6:30 am EDT / 5:30 am EST; arXiv announces at 8 pm ET the evening before
+    - cron: "7 6 * * 1-5"     # 06:07 UTC = 2:07 am EDT / 1:07 am EST; arXiv announces at 8 pm ET the evening before
   workflow_dispatch:           # "Run workflow" button for a manual run
   push:                        # republish when the pages are edited by hand
     branches: [main]
@@ -51,7 +51,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add docs data/daily
-          git diff --cached --quiet || { git commit -m "Digest $(date -u +%F)" && git push; }
+          git diff --cached --quiet || { git commit -m "Digest $(date -u +%F)" && git pull --rebase && git push; }
 
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

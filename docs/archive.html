@@ -1,46 +1,35 @@
 <!doctype html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>arXiv Digest archive</title><link rel='icon' href='icon-chi-32.png' sizes='32x32' type='image/png'><link rel='icon' href='icon-chi.svg' type='image/svg+xml'><link rel='apple-touch-icon' href='apple-touch-icon-chi.png'><link rel='preconnect' href='https://fonts.googleapis.com'><link rel='preconnect' href='https://fonts.gstatic.com' crossorigin><link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Libre+Franklin:wght@400;600&display=swap'><style>
-/* Layout: a fixed index column (date masthead + topic list) beside one wide reading column.
+/* Layout: one wide reading column under a masthead bar; every paper of the listing in score order.
    Entries are set like a contents page: no boxes, hairline separators, one accent. Graphite paper, amber accent. */
 :root{
- --paper:#F3F4F6; --ink:#16191D; --ink-2:#3F4650; --ink-3:#6A717B; --rule:#D9DCE1; --accent:#A65800; --wash:#F6EADB; --note:#35577F;
+ --paper:#F3F4F6; --ink:#16191D; --ink-2:#3F4650; --ink-3:#6A717B; --rule:#D9DCE1; --accent:#A65800; --note:#35577F;
  --sans:'Instrument Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
  --title:'Libre Franklin','Instrument Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
  color-scheme:light}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
- --paper:#14171B; --ink:#ECEDEF; --ink-2:#C0C5CC; --ink-3:#8A919B; --rule:#2B2F36; --accent:#F2A33A; --wash:#2A2117; --note:#9DB8DB; color-scheme:dark}}
+ --paper:#14171B; --ink:#ECEDEF; --ink-2:#C0C5CC; --ink-3:#8A919B; --rule:#2B2F36; --accent:#F2A33A; --note:#9DB8DB; color-scheme:dark}}
 :root[data-theme="dark"]{
- --paper:#14171B; --ink:#ECEDEF; --ink-2:#C0C5CC; --ink-3:#8A919B; --rule:#2B2F36; --accent:#F2A33A; --wash:#2A2117; --note:#9DB8DB; color-scheme:dark}
+ --paper:#14171B; --ink:#ECEDEF; --ink-2:#C0C5CC; --ink-3:#8A919B; --rule:#2B2F36; --accent:#F2A33A; --note:#9DB8DB; color-scheme:dark}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 body{margin:0;background:var(--paper);color:var(--ink);font:400 19px/1.6 var(--sans);-webkit-font-smoothing:antialiased;font-kerning:normal}
 ::selection{background:var(--accent);color:var(--paper)}
 a{color:inherit}
 a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-.wrap{display:grid;grid-template-columns:280px minmax(0,1fr);column-gap:72px;max-width:1720px;margin:0 auto;padding-inline:4vw;padding-block:56px 120px}
+.wrap{max-width:1320px;margin:0 auto;padding-inline:4vw;padding-block:48px 120px}
 
-/* index column */
-nav.side{position:sticky;top:56px;align-self:start;max-height:calc(100vh - 80px);overflow-y:auto;
- padding-right:28px;border-right:1px solid var(--rule)}
-.mast{margin-bottom:36px;padding-bottom:22px;border-bottom:2px solid var(--ink)}
-.mast .name{font-size:23px;font-weight:700;letter-spacing:-.015em;line-height:1.15}
-.mast .when{margin-top:6px;font-size:16px;font-weight:500;color:var(--accent);font-variant-numeric:tabular-nums}
-.mast .count{margin-top:2px;font-size:16px;color:var(--ink-2);font-variant-numeric:tabular-nums}
-.mast .arch{display:inline-block;margin-top:10px;font-size:14px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);text-decoration:none}
+/* masthead */
+.mast{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:10px 40px;
+ padding-bottom:18px;border-bottom:2px solid var(--ink)}
+.mast .name{font-size:30px;font-weight:700;letter-spacing:-.02em;line-height:1.1}
+.mast .info{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 28px;font-size:17px;font-variant-numeric:tabular-nums}
+.mast .when{font-weight:500;color:var(--accent)}
+.mast .count{color:var(--ink-2)}
+.mast .arch{font-size:14px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);text-decoration:none}
 .mast .arch:hover{text-decoration:underline;text-underline-offset:4px}
-.toc{display:flex;flex-direction:column;gap:14px;font-family:var(--title);font-size:15px;line-height:1.35}
-.toc a{position:relative;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
- padding:0;color:var(--ink-3);text-decoration:none;transition:color .15s}
-.toc a:hover{color:var(--ink)}
-.toc a.on{color:var(--ink)}
-.toc a.last{margin-top:14px}
 
-/* reading column */
-main{min-width:0}
-.sect{font-weight:500;font-size:30px;line-height:1.15;letter-spacing:-.02em;margin:0;scroll-margin-top:40px}
-.picks{margin-top:0}
-.entry{padding:28px 0 26px;border-top:1px solid var(--rule);scroll-margin-top:40px}
-.picks .entry:first-child{border-top:none;padding-top:0}
+/* entries */
+.entry{padding:28px 0 26px;border-top:1px solid var(--rule)}
+.list .entry:first-child{border-top:none}
 .t{margin:0;font-family:var(--title);font-weight:600;font-size:26px;line-height:1.28;letter-spacing:0}
 .t a{text-decoration:none;background-image:linear-gradient(var(--accent),var(--accent));background-size:0 2px;
  background-repeat:no-repeat;background-position:0 100%;transition:background-size .25s}
@@ -57,22 +46,10 @@ summary::-webkit-details-marker{display:none}
 .act details[open] summary::after{content:" \2212";}
 .ab{margin-top:12px;font-weight:400;font-size:19px;line-height:1.62;letter-spacing:0;text-transform:none;color:var(--ink);max-width:80em}
 
-/* the rest of the listing */
-.others{margin-top:96px}
-.others .sect{color:var(--ink-2)}
-.rest{list-style:none;margin:18px 0 0;padding:0;border-top:2px solid var(--ink)}
+/* archive page */
+.rest{list-style:none;margin:0;padding:0}
 .rest li{border-bottom:1px solid var(--rule)}
-.rest li > a{display:block;padding:12px 0;font-family:var(--title);font-size:20px;font-weight:600;line-height:1.32;letter-spacing:0;color:var(--ink);text-decoration:none;transition:color .15s}
+.rest li > a{display:block;padding:12px 0;font-family:var(--title);font-size:20px;font-weight:600;line-height:1.32;color:var(--ink);text-decoration:none;transition:color .15s}
 .rest li > a:hover{color:var(--accent)}
-.rest li.p{padding:12px 0}
-.rest li.p > a{padding:0}
-.rest summary{display:block;margin-top:4px}
-.rest .fa{display:block;font-size:17px;color:var(--ink-2)}
-.rest .abt{display:inline-block;margin-top:3px;font-size:15px;font-weight:400;color:var(--ink-3);transition:color .15s}
-.rest .abt::after{content:" +";}
-.rest details[open] .abt::after{content:" \2212";}
-.rest summary:hover .abt,.rest details[open] .abt{color:var(--accent)}
-.rest .ab{margin-top:10px}
-.rest .star{color:var(--accent);margin-right:8px;font-size:15px}
 footer{margin-top:64px;font-size:14px;color:var(--ink-3)}
-</style></head><body><div class='wrap'><nav class='side'><div class='mast'><div class='name'>arXiv Digest</div><div class='when'>Archive</div><div class='count'><a class='arch' href='index.html'>Latest digest</a></div></div></nav><main><ul class='rest'><li><a href="2026-10-14.html">Wed 14 Oct 2026</a></li></ul></main></div></body></html>
+</style></head><body><div class='wrap'><header class='mast'><div class='name'>arXiv Digest</div><div class='info'><span class='when'>Archive</span><a class='arch' href='index.html'>Latest digest</a></div></header><main><ul class='rest'><li><a href="2026-10-15.html">Thu 15 Oct 2026</a></li><li><a href="2026-10-14.html">Wed 14 Oct 2026</a></li></ul></main></div></body></html>
