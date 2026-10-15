@@ -67,8 +67,11 @@ a:focus-visible,.tg:focus-visible{outline:2px solid var(--accent);outline-offset
 .catchup .act .dtag{display:block}
 .vote{display:none;gap:6px;margin-right:-8px}
 .can-vote .vote{display:flex}
-.vb{appearance:none;background:none;border:0;padding:0 2px;margin:0;font-size:15px;line-height:1;color:var(--ink-3);cursor:pointer;transition:color .15s}
+.vb{appearance:none;background:none;border:0;padding:0 2px;margin:0;line-height:0;color:var(--ink-3);cursor:pointer;transition:color .15s}
+.vb svg{display:block;transform:translateY(1px)}
+.vb path{fill:none;stroke:currentColor;stroke-width:1.5;stroke-linejoin:round;transition:fill .15s}
 .vb:hover{color:var(--ink)}
+.vb.on path{fill:currentColor}
 .vu.on{color:var(--accent)}
 .vd.on{color:var(--note)}
 .mast .vstat{font-size:15px;color:var(--ink-3)}
@@ -230,6 +233,11 @@ FONTS = ("<link rel='preconnect' href='https://fonts.googleapis.com'><link rel='
          "<link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Libre+Franklin:wght@400;600&display=swap'>")
 
 
+# vote arrows: outline = no vote yet, filled = voted (CSS fills the path for .on)
+UP_SVG = '<svg viewBox="0 0 14 12" width="15" height="13" aria-hidden="true"><path d="M7 1.2 12.8 10.8H1.2Z"/></svg>'
+DOWN_SVG = '<svg viewBox="0 0 14 12" width="15" height="13" aria-hidden="true"><path d="M1.2 1.2H12.8L7 10.8Z"/></svg>'
+
+
 def authors_html(authors):
     names = split_arxiv(authors)
     extra = len(names) - 5
@@ -266,7 +274,7 @@ def card(r, day_tag="", day_iso=""):
 <h4 class="t"><a href="https://arxiv.org/abs/{r['id']}">{tex_html(r['title'])}</a></h4>
 <p class="au">{authors_html(r['authors'])}</p>
 {cm}
-<div class="act"><span class="vote"><button class="vb vu" title="More like this" aria-label="Upvote">&#9650;</button><button class="vb vd" title="Less like this" aria-label="Downvote">&#9660;</button></span><button class="tg" data-p="ab">Abstract</button>{fbtn}<a class="pdf" href="https://arxiv.org/pdf/{r['id']}">PDF</a><span class="dtag">{day_tag}</span></div>
+<div class="act"><span class="vote"><button class="vb vu" title="More like this" aria-label="Upvote">{UP_SVG}</button><button class="vb vd" title="Less like this" aria-label="Downvote">{DOWN_SVG}</button></span><button class="tg" data-p="ab">Abstract</button>{fbtn}<a class="pdf" href="https://arxiv.org/pdf/{r['id']}">PDF</a><span class="dtag">{day_tag}</span></div>
 <div class="ab" hidden>{tex_html(r["abstract"])}</div>
 {fpanel}
 </article>"""
