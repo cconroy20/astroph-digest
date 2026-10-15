@@ -3,12 +3,12 @@
 Uses the saved listing and text vectors in data/daily/, so nothing is re-fetched or re-embedded.
   rebuild_site.py [--site docs]
 """
-import glob, json, os, shutil, sys
+import glob, json, os, sys
 from datetime import datetime
 import numpy as np
 
 sys.path.insert(0, os.path.dirname(__file__))
-from daily import ROOT, ARCH, write_archive
+from daily import ROOT, ARCH, publish
 from digest import build
 from scorer import Scorer
 
@@ -19,8 +19,6 @@ for day in days:
     rows = json.load(open(os.path.join(ARCH, day + ".json")))
     E = np.load(os.path.join(ARCH, day + ".npy")).astype(np.float32)
     label = datetime.strptime(day, "%Y-%m-%d").strftime("%A, %-d %B %Y")
-    page = build(label, rows, sc, E=E)[0]
-    open(os.path.join(site, day + ".html"), "w").write(page)
+    page, order, res, E, items = build(label, rows, sc, E=E)
+    publish(site, day, label, page, items)
     print("rebuilt", day)
-shutil.copyfile(os.path.join(site, days[-1] + ".html"), os.path.join(site, "index.html"))
-write_archive(site)

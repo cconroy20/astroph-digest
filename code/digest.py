@@ -64,6 +64,8 @@ summary::-webkit-details-marker{display:none}
 .act summary{display:inline-block;color:var(--accent);white-space:nowrap}
 .act summary::after{content:" +";}
 .act details[open] summary::after{content:" \\2212";}
+.act .dtag{display:none;position:absolute;right:0;top:0;font-weight:500;color:var(--ink-3)}
+.catchup .act .dtag{display:block}
 .ab{margin-top:12px;font-weight:400;font-size:19px;line-height:1.62;letter-spacing:0;text-transform:none;color:var(--ink);max-width:80em}
 
 /* archive page */
@@ -72,6 +74,37 @@ summary::-webkit-details-marker{display:none}
 .rest li > a{display:block;padding:12px 0;font-family:var(--title);font-size:20px;font-weight:600;line-height:1.32;color:var(--ink);text-decoration:none;transition:color .15s}
 .rest li > a:hover{color:var(--accent)}
 footer{margin-top:64px;font-size:14px;color:var(--ink-3)}
+"""
+
+CATCHUP_JS = """
+(function(){
+ var b=document.body; if(!b.dataset.index) return;
+ var today=b.dataset.date, KEY='arxivDigest.seen', VIEW='arxivDigest.view', MAX=15;
+ function get(k){try{return localStorage.getItem(k)}catch(e){return null}}
+ function set(k,v){try{v===null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}}
+ var seen=get(KEY), view=null; try{view=JSON.parse(get(VIEW)||'null')}catch(e){}
+ var from=null;
+ if(view&&view.to===today) from=view.from;            /* same day: keep the merged view on reload */
+ else if(seen&&seen<today) from=seen;                 /* listings after the last one viewed are unread */
+ set(KEY,today); set(VIEW,from?JSON.stringify({from:from,to:today}):null);
+ if(!from) return;
+ function fmt(d){return new Date(d+'T12:00:00').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})}
+ fetch('days/index.json',{cache:'no-cache'}).then(function(r){return r.json()}).then(function(idx){
+  var days=idx.filter(function(d){return d>from&&d<=today}).slice(-MAX);
+  if(days.length<2) return;
+  return Promise.all(days.map(function(d){return fetch('days/'+d+'.json').then(function(r){return r.json()})})).then(function(data){
+   var ps=[].concat.apply([],data.map(function(x){return x.papers})).sort(function(a,c){return c.s-a.s});
+   document.querySelector('main.list').innerHTML=ps.map(function(p){return p.html}).join('');
+   b.classList.add('catchup');
+   document.querySelector('.mast .when').textContent=fmt(days[0])+' \\u2013 '+fmt(today);
+   document.querySelector('.mast .count').textContent=days.length+' listings \\u00b7 '+ps.length+' new submissions';
+   var a=document.createElement('a'); a.className='arch'; a.href='#'; a.textContent='Today only';
+   a.onclick=function(e){e.preventDefault(); set(VIEW,null); location.reload()};
+   var arch=document.querySelector('.mast .arch'); arch.parentNode.insertBefore(a,arch);
+   (function ts(){var M=window.MathJax; if(M&&M.typesetPromise){(M.startup&&M.startup.promise||Promise.resolve()).then(function(){M.typesetPromise()})} else setTimeout(ts,200)})();
+  });
+ }).catch(function(){});
+})();
 """
 
 # file names carry the design ("chi"): browsers cache icons by URL, so a new design needs new names
@@ -88,13 +121,13 @@ def authors_html(authors):
     return ", ".join(esc(n) for n in names[:5]) + (f" +{extra}" if extra > 0 else "")
 
 
-def card(r, aid):
+def card(r, day_tag=""):
     cm = f'<p class="cm">{esc(r["comments"])}</p>' if r.get("comments") else ""
-    return f"""<article class="entry" id="{aid}">
+    return f"""<article class="entry">
 <h4 class="t"><a href="https://arxiv.org/abs/{r['id']}">{tex_html(r['title'])}</a></h4>
 <p class="au">{authors_html(r['authors'])}</p>
 {cm}
-<div class="act"><details><summary>Abstract</summary><div class="ab">{tex_html(r["abstract"])}</div></details><a class="pdf" href="https://arxiv.org/pdf/{r['id']}">PDF</a></div>
+<div class="act"><details><summary>Abstract</summary><div class="ab">{tex_html(r["abstract"])}</div></details><a class="pdf" href="https://arxiv.org/pdf/{r['id']}">PDF</a><span class="dtag">{day_tag}</span></div>
 </article>"""
 
 
@@ -106,7 +139,8 @@ def masthead(label, n):
 
 
 def build(label, rows, sc, E=None):
-    """The whole listing as one list in score order. Pass E (text vectors) to skip embedding."""
+    """The whole listing as one list in score order. Pass E (text vectors) to skip embedding.
+    Also returns items = [{s: score, html: entry}] for the catch-up data file (scores share one scale across days)."""
     cfg = sc.cfg
     cal = json.load(open(os.path.join(ROOT, "models", cfg["model"], "calib.json")))
     E = sc.embed(rows) if E is None else E
@@ -115,15 +149,15 @@ def build(label, rows, sc, E=None):
     auth = np.array([x["auth"] for x in res])
     comb = (text - cal["mu"]) / cal["sd"] + cfg.get("alpha_auth", 0.0) * auth
     order = list(np.argsort(-comb))
-    parts = [masthead(label, len(rows)), '<main class="list">']
-    parts += [card(rows[i], f"p{k}") for k, i in enumerate(order, 1)]
-    parts.append("</main>")
+    day = datetime.strptime(label, "%A, %d %B %Y")
+    items = [{"s": round(float(comb[i]), 4), "html": card(rows[i], f"{day:%a %-d %b}")} for i in order]
+    parts = [masthead(label, len(rows)), '<main class="list">'] + [it["html"] for it in items] + ["</main>"]
     parts.append(f"<footer>Ranked by {cfg['model']} against {int((sc.wt > 0).sum()):,} papers from your library and citations "
                  f"&middot; generated {datetime.now():%-d %b %Y, %H:%M}</footer>")
     page = f"<!doctype html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>" \
-           f"<title>arXiv Digest · {esc(label)}</title>{ICONS}{FONTS}<style>{CSS}</style>{MATHJAX}</head><body>" \
-           f"<div class='wrap'>{''.join(parts)}</div></body></html>"
-    return page, order, res, E
+           f"<title>arXiv Digest · {esc(label)}</title>{ICONS}{FONTS}<style>{CSS}</style>{MATHJAX}</head><body data-date='{day:%Y-%m-%d}'>" \
+           f"<div class='wrap'>{''.join(parts)}</div><script>{CATCHUP_JS}</script></body></html>"
+    return page, order, res, E, items
 
 
 def listing_label(mailing):

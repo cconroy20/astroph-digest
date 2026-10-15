@@ -39,6 +39,23 @@ def write_archive(site):
     open(os.path.join(site, "archive.html"), "w").write(page)
 
 
+def publish(site, day, label, page, items):
+    """Write one day's page and its catch-up data file (days/<date>.json), then refresh index/archive."""
+    os.makedirs(os.path.join(site, "days"), exist_ok=True)
+    open(os.path.join(site, day + ".html"), "w").write(page)
+    json.dump({"date": day, "label": label, "papers": items}, open(os.path.join(site, "days", day + ".json"), "w"))
+    refresh_index(site)
+
+
+def refresh_index(site):
+    days = sorted(f[:-5] for f in os.listdir(os.path.join(site, "days")) if re.fullmatch(r"\d{4}-\d{2}-\d{2}\.json", f))
+    json.dump(days, open(os.path.join(site, "days", "index.json"), "w"))
+    latest = open(os.path.join(site, days[-1] + ".html")).read()
+    # index.html is the latest day, marked so its script offers the catch-up view
+    open(os.path.join(site, "index.html"), "w").write(latest.replace("<body data-date=", "<body data-index='1' data-date=", 1))
+    write_archive(site)
+
+
 def main():
     site = os.path.join(ROOT, sys.argv[sys.argv.index("--site") + 1]) if "--site" in sys.argv else os.path.join(ROOT, "digests")
     from fetch_listing import fetch
@@ -61,12 +78,8 @@ def main():
     from scorer import Scorer
     cfg = json.load(open(os.path.join(ROOT, "models", "config.json")))
     sc = Scorer(cfg)
-    page, order, res, E = build(label, rows, sc)
-    os.makedirs(site, exist_ok=True)
-    open(path, "w").write(page)
-    latest = max(f for f in os.listdir(site) if re.fullmatch(r"\d{4}-\d{2}-\d{2}\.html", f))
-    shutil.copyfile(os.path.join(site, latest), os.path.join(site, "index.html"))
-    write_archive(site)
+    page, order, res, E, items = build(label, rows, sc)
+    publish(site, day, label, page, items)
     os.makedirs(ARCH, exist_ok=True)
     json.dump(rows, open(os.path.join(ARCH, day + ".json"), "w"))
     np.save(os.path.join(ARCH, day + ".npy"), E.astype(np.float16))
