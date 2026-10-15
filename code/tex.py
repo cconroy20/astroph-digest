@@ -86,7 +86,7 @@ MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\
  macros:{AA:'\\unicode{x212B}',msun:'M_\\odot',Msun:'M_\\odot',sun:'\\odot',degr:'^\\circ',arcsec:'^{\\prime\\prime}',
  kms:'\\,\\mathrm{km\\,s^{-1}}',micron:'\\mu\\mathrm{m}',farcs:'.\\!\\!^{\\prime\\prime}',ion:['\\mathrm{#1\\,\\small #2}',2]}},
  options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']},chtml:{scale:0.97}};
-</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>"""
+</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js" integrity="sha384-AHAnt9ZhGeHIrydA1Kp1L7FN+2UosbF7RQg6C+9Is/a7kDpQ1684C2iH2VWil6r4" crossorigin="anonymous"></script>"""
 
 
 if __name__ == "__main__":

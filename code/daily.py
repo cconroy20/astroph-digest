@@ -31,7 +31,7 @@ def write_archive(site):
     from digest import CSS, FONTS, ICONS
     days = sorted((f[:-5] for f in os.listdir(site) if re.fullmatch(r"\d{4}-\d{2}-\d{2}\.html", f)), reverse=True)
     items = "".join(f'<li><a href="{d}.html">{datetime.strptime(d, "%Y-%m-%d"):%a %-d %b %Y}</a></li>' for d in days)
-    page = (f"<!doctype html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>"
+    page = (f"<!doctype html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><meta name='robots' content='noindex, nofollow'>"
             f"<title>arXiv Digest archive</title>{ICONS}{FONTS}<style>{CSS}</style></head><body><div class='wrap'>"
             f"<header class='mast'><div class='name'>arXiv Digest</div><div class='info'><span class='when'>Archive</span>"
             f"<a class='arch' href='index.html'>Latest digest</a></div></header>"

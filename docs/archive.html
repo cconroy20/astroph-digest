@@ -1,4 +1,4 @@
-<!doctype html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>arXiv Digest archive</title><link rel='icon' href='icon-chi-32.png' sizes='32x32' type='image/png'><link rel='icon' href='icon-chi.svg' type='image/svg+xml'><link rel='apple-touch-icon' href='apple-touch-icon-chi.png'><link rel='preconnect' href='https://fonts.googleapis.com'><link rel='preconnect' href='https://fonts.gstatic.com' crossorigin><link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Libre+Franklin:wght@400;600&display=swap'><style>
+<!doctype html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><meta name='robots' content='noindex, nofollow'><title>arXiv Digest archive</title><link rel='icon' href='icon-chi-32.png' sizes='32x32' type='image/png'><link rel='icon' href='icon-chi.svg' type='image/svg+xml'><link rel='apple-touch-icon' href='apple-touch-icon-chi.png'><link rel='preconnect' href='https://fonts.googleapis.com'><link rel='preconnect' href='https://fonts.gstatic.com' crossorigin><link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Libre+Franklin:wght@400;600&display=swap'><style>
 /* Layout: one wide reading column under a masthead bar; every paper of the listing in score order.
    Entries are set like a contents page: no boxes, hairline separators, one accent. Graphite paper, amber accent. */
 :root{
@@ -45,6 +45,20 @@ a:focus-visible,.tg:focus-visible{outline:2px solid var(--accent);outline-offset
 .act a.pdf:hover,.tg:hover{text-decoration:underline;text-underline-offset:4px}
 .act .dtag{display:none;margin-left:auto;font-weight:500;color:var(--ink-3)}
 .catchup .act .dtag{display:block}
+.vote{display:none;margin-left:auto;gap:18px}
+.can-vote .vote{display:flex}
+.can-vote.catchup .act .dtag{margin-left:28px}
+.vb{appearance:none;background:none;border:0;padding:0 2px;margin:0;font-size:15px;line-height:1;color:var(--ink-3);cursor:pointer;transition:color .15s}
+.vb:hover{color:var(--ink)}
+.vu.on{color:var(--accent)}
+.vd.on{color:var(--note)}
+.mast .vstat{font-size:15px;color:var(--ink-3)}
+.mast .vstat:empty{display:none}
+.mast .vstat.bad{color:var(--accent)}
+.setup{margin:18px 0 0;padding:14px 18px;border:1px solid var(--rule);font-size:16px}
+.setup p{margin:4px 0}
+.setup input{width:min(520px,100%);padding:6px 8px;font:14px ui-monospace,Menlo,monospace;border:1px solid var(--rule);background:var(--paper);color:var(--ink)}
+.setup button{padding:6px 12px;font:600 14px var(--sans);border:1px solid var(--ink-3);background:var(--paper);color:var(--ink);cursor:pointer}
 .fg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;margin-top:18px}
 .fgnote{grid-column:1/-1;margin:0 0 -12px;font-size:15px;color:var(--ink-3)}
 .fig{margin:0;cursor:zoom-in}

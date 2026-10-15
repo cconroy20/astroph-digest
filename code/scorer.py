@@ -41,6 +41,43 @@ class Scorer:
         rp = os.path.join(ROOT, "models", cfg["model"], "ref_scores.npy")
         if os.path.exists(rp):
             self.ref = np.sort(np.load(rp))
+        self._load_votes()
+
+    def _load_votes(self):
+        """Votes cast on the site (data/votes.json, written by the page). Upvoted papers join the reference set like
+        library papers (text and authors); downvoted papers form a 'less like this' set used in score()."""
+        self.En, self.neg_ids, self.n_up = np.zeros((0, self.Ep.shape[1]), np.float32), [], 0
+        path = os.path.join(D, "votes.json")
+        if not os.path.exists(path):
+            return
+        by_day = defaultdict(dict)
+        for aid, v in json.load(open(path)).get("votes", {}).items():
+            if v.get("v") and v.get("day"):
+                by_day[v["day"]][aid] = v["v"]
+        up_E, up_rows, dn_E = [], [], []
+        for day, vs in by_day.items():
+            f = os.path.join(D, "daily", day + ".json")
+            if not os.path.exists(f):
+                continue
+            rows, E = json.load(open(f)), np.load(f[:-5] + ".npy").astype(np.float32)
+            for k, r in enumerate(rows):
+                if vs.get(r["id"], 0) > 0:
+                    up_E.append(E[k]); up_rows.append(r)
+                elif vs.get(r["id"], 0) < 0:
+                    dn_E.append(E[k]); self.neg_ids.append(r["id"])
+        w = self.cfg.get("vote_up_weight", 1.0)
+        if up_E:
+            self.Ep = np.vstack([self.Ep, np.array(up_E)])
+            self.wt = np.concatenate([self.wt, np.full(len(up_E), w, np.float32)])
+            for r in up_rows:
+                self.P.append({"key": "vote:" + r["id"], "arxiv": r["id"], "src": ["vote"], "authors": [],
+                               "collections": [], "title": r["title"]})
+                self.topical.append([])
+                for j, kk in enumerate(keys_arxiv(r["authors"], 15)):
+                    self.pos_auth[kk] += w * (1.0 if j < 3 else 0.5)
+        if dn_E:
+            self.En = np.array(dn_E)
+        self.n_up = len(up_E)
 
     def embed(self, rows):
         if self.encoder is None:
@@ -64,11 +101,26 @@ class Scorer:
         E = self.embed(rows) if E is None else E
         S = E @ self.Ep.T
         idx = np.nonzero(self.wt > 0)[0]
-        own = {p["arxiv"]: i for i, p in enumerate(self.P) if p["arxiv"]}
-        for n, r in enumerate(rows):  # a paper never matches its own record
-            if r["id"] in own:
-                S[n, own[r["id"]]] = -9
+        own = defaultdict(list)
+        for i, p in enumerate(self.P):
+            if p["arxiv"]:
+                own[p["arxiv"]].append(i)
+        for n, r in enumerate(rows):  # a paper never matches its own record (library entry or vote)
+            for i in own.get(r["id"], ()):
+                S[n, i] = -9
         text = replay.text_scores(S[:, idx], self.wt[idx], cfg["method"], cfg.get("tau", 0.05), cfg.get("k", 5))
+        if len(self.En) and cfg["method"] == "kde":
+            # "less like this": text = log(P / sum w), so P is recoverable; D is the same kernel sum over downvotes.
+            # The penalty log(1 + D/P) is ~0 when a paper resembles your positives far more than your downvotes.
+            Sn = E @ self.En.T
+            neg = {aid: j for j, aid in enumerate(self.neg_ids)}
+            for n, r in enumerate(rows):
+                if r["id"] in neg:
+                    Sn[n, neg[r["id"]]] = -9
+            tau = cfg.get("tau", 0.05)
+            Pk = np.exp(text) * self.wt[idx].sum()
+            Dk = np.exp((Sn - 1) / tau).sum(1)
+            text = text - cfg.get("vote_down_gamma", 1.0) * np.log1p(Dk / np.maximum(Pk, 1e-300))
         out = []
         for n, r in enumerate(rows):
             a, hits = self.author_terms(r["authors"])
