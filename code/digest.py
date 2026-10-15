@@ -55,7 +55,7 @@ a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-of
  background-repeat:no-repeat;background-position:0 100%;transition:background-size .25s}
 .t a:hover{background-size:100% 2px}
 .au{margin:10px 0 0;font-size:19.5px;line-height:1.45;color:var(--ink-2)}
-.cm{margin:4px 0 0;font-size:17px;line-height:1.45;color:var(--note)}
+.cm{margin:4px 0 0;font-size:18.4px;line-height:1.45;color:var(--note)}
 .act{position:relative;margin-top:12px;font-size:14px;font-weight:600;letter-spacing:.14em;text-transform:uppercase}
 .act a.pdf{position:absolute;left:150px;top:0;color:var(--accent);text-decoration:none}
 .act a.pdf:hover,.act summary:hover{text-decoration:underline;text-underline-offset:4px}
