@@ -66,6 +66,7 @@ a:focus-visible,.tg:focus-visible{outline:2px solid var(--accent);outline-offset
 .act .dtag{display:none;margin-left:auto;font-weight:500;color:var(--ink-3)}
 .catchup .act .dtag{display:block}
 .fg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;margin-top:18px}
+.fgnote{grid-column:1/-1;margin:0 0 -12px;font-size:15px;color:var(--ink-3)}
 .fig{margin:0;cursor:zoom-in}
 .fig .im{height:250px;display:flex;gap:6px;align-items:center;justify-content:center;padding:10px;background:#fff;border:1px solid var(--rule);transition:border-color .15s}
 .fig:hover .im{border-color:var(--ink-3)}
@@ -74,7 +75,7 @@ a:focus-visible,.tg:focus-visible{outline:2px solid var(--accent);outline-offset
 .fig figcaption b,.lbin .cap b{color:var(--ink);font-weight:600}
 .lb{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;padding:3vh 3vw;background:rgba(12,14,18,.82);cursor:zoom-out}
 .lbin{max-width:min(1500px,94vw);max-height:94vh;overflow:auto;padding:22px 26px;background:var(--paper);cursor:auto}
-.lbin .ims{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:12px;background:#fff}
+.lbin .ims{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:12px;background:#fff;cursor:zoom-out}
 .lbin .ims img{max-width:100%;max-height:72vh;object-fit:contain}
 .lbin .cap{margin:14px 0 0;font-size:17px;line-height:1.55}
 .ab{margin-top:12px;font-weight:400;font-size:19px;line-height:1.62;letter-spacing:0;text-transform:none;color:var(--ink);max-width:80em}
@@ -98,7 +99,7 @@ PAGE_JS = """
   var f=e.target.closest('.fig');
   if(f){var lb=document.createElement('div'); lb.className='lb';
    lb.innerHTML='<div class="lbin">'+f.querySelector('.full').innerHTML+'</div>'; document.body.appendChild(lb); load(lb); typeset(lb); return}
-  var lb=e.target.closest('.lb'); if(lb&&!e.target.closest('.lbin')) lb.remove();
+  var lb=e.target.closest('.lb'); if(lb&&(!e.target.closest('.lbin')||e.target.closest('.ims'))) lb.remove();  /* click outside or on the figure */
  });
  document.addEventListener('keydown',function(e){if(e.key==='Escape'){var lb=document.querySelector('.lb'); if(lb) lb.remove()}});
 })();
@@ -173,7 +174,8 @@ def card(r, day_tag=""):
     cm = f'<p class="cm">{esc(r["comments"])}</p>' if r.get("comments") else ""
     figs = r.get("figs") or []
     fbtn = '<button class="tg" data-p="fg">Figures</button>' if figs else ""
-    fpanel = f'<div class="fg" hidden>{"".join(figure_html(f) for f in figs)}</div>' if figs else ""
+    note = '<p class="fgnote">Key figures as named by the authors</p>' if any(f.get("key") for f in figs) else ""
+    fpanel = f'<div class="fg" hidden>{note}{"".join(figure_html(f) for f in figs)}</div>' if figs else ""
     return f"""<article class="entry">
 <h4 class="t"><a href="https://arxiv.org/abs/{r['id']}">{tex_html(r['title'])}</a></h4>
 <p class="au">{authors_html(r['authors'])}</p>
