@@ -2,7 +2,13 @@ name: Daily digest
 
 on:
   schedule:
-    - cron: "7 6 * * 1-5"     # 06:07 UTC = 2:07 am EDT / 1:07 am EST; arXiv announces at 8 pm ET the evening before
+    # GitHub runs schedules best-effort and may drop them under load, so the job is triggered four times;
+    # the first run that fires builds the digest, later ones find it done and only republish.
+    # 06:07 / 07:37 / 09:17 / 11:47 UTC = 2:07 / 3:37 / 5:17 / 7:47 am EDT (an hour earlier in EST).
+    - cron: "7 6 * * 1-5"
+    - cron: "37 7 * * 1-5"
+    - cron: "17 9 * * 1-5"
+    - cron: "47 11 * * 1-5"
   workflow_dispatch:           # "Run workflow" button for a manual run
   push:                        # republish when the pages are edited by hand
     branches: [main]
