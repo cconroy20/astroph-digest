@@ -4,11 +4,12 @@ on:
   schedule:
     # GitHub runs schedules best-effort and may drop them under load, so the job is triggered four times;
     # the first run that fires builds the digest, later ones find it done and only republish.
-    # 06:07 / 07:37 / 09:17 / 11:47 UTC = 2:07 / 3:37 / 5:17 / 7:47 am EDT (an hour earlier in EST).
-    - cron: "7 6 * * 1-5"
-    - cron: "37 7 * * 1-5"
-    - cron: "17 9 * * 1-5"
-    - cron: "47 11 * * 1-5"
+    # 04:07 / 05:37 / 07:17 / 09:47 UTC = 12:07 / 1:37 / 3:17 / 5:47 am EDT (an hour earlier in EST, the first at
+    # 11:07 pm the evening before -- still after arXiv's 8 pm ET announcement; Mon-Fri in UTC = Sun-Thu evenings ET).
+    - cron: "7 4 * * 1-5"
+    - cron: "37 5 * * 1-5"
+    - cron: "17 7 * * 1-5"
+    - cron: "47 9 * * 1-5"
   workflow_dispatch:           # "Run workflow" button for a manual run
   push:                        # republish when the pages are edited by hand
     branches: [main]
