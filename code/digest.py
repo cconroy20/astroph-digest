@@ -271,10 +271,10 @@ def card(r, day_tag="", day_iso=""):
     note = '<p class="fgnote">Key figures as named by the authors</p>' if any(f.get("key") for f in figs) else ""
     fpanel = f'<div class="fg" hidden>{note}{"".join(figure_html(f) for f in figs)}</div>' if figs else ""
     return f"""<article class="entry" data-id="{r['id']}" data-day="{day_iso}">
-<h4 class="t"><a href="https://arxiv.org/abs/{r['id']}">{tex_html(r['title'])}</a></h4>
+<h4 class="t"><a href="https://arxiv.org/abs/{r['id']}" target="_blank" rel="noopener">{tex_html(r['title'])}</a></h4>
 <p class="au">{authors_html(r['authors'])}</p>
 {cm}
-<div class="act"><span class="vote"><button class="vb vu" title="More like this" aria-label="Upvote">{UP_SVG}</button><button class="vb vd" title="Less like this" aria-label="Downvote">{DOWN_SVG}</button></span><button class="tg" data-p="ab">Abstract</button>{fbtn}<a class="pdf" href="https://arxiv.org/pdf/{r['id']}">PDF</a><span class="dtag">{day_tag}</span></div>
+<div class="act"><span class="vote"><button class="vb vu" title="More like this" aria-label="Upvote">{UP_SVG}</button><button class="vb vd" title="Less like this" aria-label="Downvote">{DOWN_SVG}</button></span><button class="tg" data-p="ab">Abstract</button>{fbtn}<a class="pdf" href="https://arxiv.org/pdf/{r['id']}" target="_blank" rel="noopener">PDF</a><span class="dtag">{day_tag}</span></div>
 <div class="ab" hidden>{tex_html(r["abstract"])}</div>
 {fpanel}
 </article>"""
