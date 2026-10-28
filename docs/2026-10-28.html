@@ -782,7 +782,7 @@ MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\
 <div class="act"><span class="vote"><button class="vb vu" title="More like this" aria-label="Upvote"><svg viewBox="0 0 14 12" width="15" height="13" aria-hidden="true"><path d="M7 1.2 12.8 10.8H1.2Z"/></svg></button><button class="vb vd" title="Less like this" aria-label="Downvote"><svg viewBox="0 0 14 12" width="15" height="13" aria-hidden="true"><path d="M1.2 1.2H12.8L7 10.8Z"/></svg></button></span><button class="tg" data-p="ab">Abstract</button><a class="pdf" href="https://arxiv.org/pdf/2610.36591" target="_blank" rel="noopener">PDF</a><span class="dtag">Wed 28 Oct</span></div>
 <div class="ab" hidden>In warm inflation, the primordial fluctuations are driven by random kicks from a hot radiation bath. Two features of these kicks matter: how long the bath remembers them, which shapes the power spectrum, and how their strengths are spread, which controls the rare, extreme fluctuations. In this paper, we investigate how primordial black holes and the accompanying induced gravitational waves can be used to discriminate between these two features. We use a simple model inspired by warm inflation, in which independent kicks of random strength add up to a narrow peak in the power spectrum. At leading order, the induced gravitational wave depends only on the power spectrum and is therefore insensitive to how the kicks are distributed. However, the black holes are very sensitive to these rare large fluctuations. Hence, two baths can yield the same gravitational wave signal while forming black holes at very different rates. A modest kurtosis range of 0.1 to 0.3 enhances black-hole formation by factors of ten to a million at fixed gravitational-wave amplitude, the larger factors for the rarer black holes. Counting peaks rather than all points, or widening the spectrum, lowers the enhancement by at most a factor of about four. In general a change in the power affects both phenomena, while the kurtosis affects only the black hole production.</div>
 
-</article></main><footer>Ranked by indus against 5,380 papers from your library and citations &middot; generated 28 Oct 2026, 07:01</footer></div><script>
+</article></main><footer>Ranked by indus against 5,380 papers from your library and citations &middot; generated 28 Oct 2026, 07:09</footer></div><script>
 (function(){
  var REPO='cconroy20/astroph-digest', API='https://api.github.com/repos/'+REPO+'/contents/data/votes.json';
  var b=document.body, today=b.dataset.date, isIndex=!!b.dataset.index;
@@ -879,10 +879,10 @@ MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\
  function runs(){return gh(WF+'/runs?per_page=10').then(function(r){return r.json()}).then(function(j){return j.workflow_runs||[]})}
  function watch(pick){return new Promise(function(res,rej){var n=0;
   (function poll(){
-   if(++n>90) return rej(new Error('timed out'));    /* 15 minutes */
+   if(++n>180) return rej(new Error('timed out'));    /* 15 minutes */
    runs().then(function(rs){var run=pick(rs);
     if(run&&run.status==='completed') return run.conclusion==='success'?res():rej(new Error(run.conclusion));
-    setTimeout(poll,10000)}).catch(function(){setTimeout(poll,10000)})})()})}
+    setTimeout(poll,5000)}).catch(function(){setTimeout(poll,5000)})})()})}
  function update(btn){
   var sent=false, waits=0;
   function done(msg){btn.textContent=msg; setTimeout(function(){btn.textContent='Update'; btn.disabled=false},5000)}

@@ -203,10 +203,10 @@ PAGE_JS = """
  function runs(){return gh(WF+'/runs?per_page=10').then(function(r){return r.json()}).then(function(j){return j.workflow_runs||[]})}
  function watch(pick){return new Promise(function(res,rej){var n=0;
   (function poll(){
-   if(++n>90) return rej(new Error('timed out'));    /* 15 minutes */
+   if(++n>180) return rej(new Error('timed out'));    /* 15 minutes */
    runs().then(function(rs){var run=pick(rs);
     if(run&&run.status==='completed') return run.conclusion==='success'?res():rej(new Error(run.conclusion));
-    setTimeout(poll,10000)}).catch(function(){setTimeout(poll,10000)})})()})}
+    setTimeout(poll,5000)}).catch(function(){setTimeout(poll,5000)})})()})}
  function update(btn){
   var sent=false, waits=0;
   function done(msg){btn.textContent=msg; setTimeout(function(){btn.textContent='Update'; btn.disabled=false},5000)}

@@ -901,7 +901,7 @@ MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\
 <div class="act"><span class="vote"><button class="vb vu" title="More like this" aria-label="Upvote"><svg viewBox="0 0 14 12" width="15" height="13" aria-hidden="true"><path d="M7 1.2 12.8 10.8H1.2Z"/></svg></button><button class="vb vd" title="Less like this" aria-label="Downvote"><svg viewBox="0 0 14 12" width="15" height="13" aria-hidden="true"><path d="M1.2 1.2H12.8L7 10.8Z"/></svg></button></span><button class="tg" data-p="ab">Abstract</button><button class="tg" data-p="fg">Figures</button><a class="pdf" href="https://arxiv.org/pdf/2610.18975" target="_blank" rel="noopener">PDF</a><span class="dtag">Thu 15 Oct</span></div>
 <div class="ab" hidden>We propose a post-inflationary first-order phase transition modulated by a light spectator field as the origin of primordial large-scale curvature perturbations. Spectator fluctuations acquired during inflation modulate the bubble nucleation history, generating curvature perturbations together with correlated intrinsic gravitational-wave (GW) anisotropies. We show that this mechanism can reproduce the observed amplitude of curvature perturbations while producing a loud stochastic GW background in the frequency bands of space-based detectors such as LISA, Taiji, and TianQin. A concrete benchmark yields strongly enhanced intrinsic GW anisotropies and a local primordial non-Gaussianity signal within reach of future large-scale-structure surveys.</div>
 <div class="fg" hidden><figure class="fig"><div class="im"><img data-src="https://arxiv.org/html/2610.18975v1/main_sensitivity_benchmarks.svg" alt=""></div><figcaption><b>Figure 1.</b> GW monopole (solid) and absolute quadrupole anisotropy (dashed) for the CSI benchmark (blue) and the benchmark with the mass term (orange).</figcaption><div class="full" hidden><div class="ims"><img data-src="https://arxiv.org/html/2610.18975v1/main_sensitivity_benchmarks.svg" alt=""></div><p class="cap"><b>Figure 1.</b> GW monopole (solid) and absolute quadrupole anisotropy (dashed) for the CSI benchmark (blue) and the benchmark with the mass term (orange). Gray: LISA instrument-noise sensitivity to the monopole, dipole and quadrupole [61]; black: monopole power-law integrated sensitivity (PLS) [62] ($T_{\rm obs}=3\,$yr, ${\rm SNR}=1$).</p></div></figure></div>
-</article></main><footer>Ranked by indus against 5,380 papers from your library and citations &middot; generated 28 Oct 2026, 07:01</footer></div><script>
+</article></main><footer>Ranked by indus against 5,380 papers from your library and citations &middot; generated 28 Oct 2026, 07:09</footer></div><script>
 (function(){
  var REPO='cconroy20/astroph-digest', API='https://api.github.com/repos/'+REPO+'/contents/data/votes.json';
  var b=document.body, today=b.dataset.date, isIndex=!!b.dataset.index;
@@ -998,10 +998,10 @@ MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\
  function runs(){return gh(WF+'/runs?per_page=10').then(function(r){return r.json()}).then(function(j){return j.workflow_runs||[]})}
  function watch(pick){return new Promise(function(res,rej){var n=0;
   (function poll(){
-   if(++n>90) return rej(new Error('timed out'));    /* 15 minutes */
+   if(++n>180) return rej(new Error('timed out'));    /* 15 minutes */
    runs().then(function(rs){var run=pick(rs);
     if(run&&run.status==='completed') return run.conclusion==='success'?res():rej(new Error(run.conclusion));
-    setTimeout(poll,10000)}).catch(function(){setTimeout(poll,10000)})})()})}
+    setTimeout(poll,5000)}).catch(function(){setTimeout(poll,5000)})})()})}
  function update(btn){
   var sent=false, waits=0;
   function done(msg){btn.textContent=msg; setTimeout(function(){btn.textContent='Update'; btn.disabled=false},5000)}

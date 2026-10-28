@@ -36,27 +36,37 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      # a few seconds, before installing anything: when today's listing is already built, the rest is skipped
+      - name: Is there a new listing?
+        id: check
+        run: python3 code/check_new.py docs >> "$GITHUB_OUTPUT"
+
+      - if: steps.check.outputs.new == 'true'
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
           cache: pip
           cache-dependency-path: requirements-ci.txt
 
       - name: Cache the INDUS text model
+        if: steps.check.outputs.new == 'true'
         uses: actions/cache@v4
         with:
           path: ~/.cache/huggingface
           key: hf-nasa-smd-ibm-st-v2
 
       - name: Install
+        if: steps.check.outputs.new == 'true'
         run: |
           pip install torch==2.14.1 --index-url https://download.pytorch.org/whl/cpu
           pip install -r requirements-ci.txt
 
       - name: Build today's digest
+        if: steps.check.outputs.new == 'true'
         run: python code/daily.py --site docs
 
       - name: Save the digest and the day's archive
+        if: steps.check.outputs.new == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -77,9 +87,12 @@ jobs:
           done
           exit 1
 
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      - if: steps.check.outputs.new == 'true' || github.event_name == 'push'
+        uses: actions/configure-pages@v5
+      - if: steps.check.outputs.new == 'true' || github.event_name == 'push'
+        uses: actions/upload-pages-artifact@v3
         with:
           path: docs
       - id: deploy
+        if: steps.check.outputs.new == 'true' || github.event_name == 'push'
         uses: actions/deploy-pages@v4

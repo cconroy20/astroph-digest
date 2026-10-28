@@ -803,7 +803,7 @@ MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\
 <div class="act"><span class="vote"><button class="vb vu" title="More like this" aria-label="Upvote"><svg viewBox="0 0 14 12" width="15" height="13" aria-hidden="true"><path d="M7 1.2 12.8 10.8H1.2Z"/></svg></button><button class="vb vd" title="Less like this" aria-label="Downvote"><svg viewBox="0 0 14 12" width="15" height="13" aria-hidden="true"><path d="M1.2 1.2H12.8L7 10.8Z"/></svg></button></span><button class="tg" data-p="ab">Abstract</button><a class="pdf" href="https://arxiv.org/pdf/2610.28608" target="_blank" rel="noopener">PDF</a><span class="dtag">Wed 21 Oct</span></div>
 <div class="ab" hidden>We derive explicit expressions for the primordial scalar and tensor spectra at arbitrary finite order $p$ in the slow-roll expansion, valid both for canonical single-field inflation and $k$-inflation. At any order, the spectra are determined by known combinations of slow-roll parameters weighted by universal coefficients entirely fixed by the free de Sitter solutions, without requiring perturbatively corrected mode functions. Using these spectra, we obtain closed-form consistency relations that connect the tensor tilt $n_t$ and its runnings $\alpha_n^t\equiv d^n n_t/d(\ln k)^n$ to the tensor-to-scalar ratio $r$, the scalar spectral index $n_s$, and its runnings $\alpha_n^s\equiv d^n(n_s-1)/d(\ln k)^n$. The consistency relations are valid for arbitrary $n\geq 0$ and any finite $p\geq 0$, without recursion over lower-order relations. For $k$-inflation, they additionally depend on the scalar sound speed and its scale derivatives. We develop an algorithm that generates both the spectra and consistency relations for any pair $(n,p)$. We reproduce known results through next-to-next-to-next-to-leading order (N3LO) and extend the explicit calculations up to N10LO.</div>
 
-</article></main><footer>Ranked by indus against 5,380 papers from your library and citations &middot; generated 28 Oct 2026, 07:01</footer></div><script>
+</article></main><footer>Ranked by indus against 5,380 papers from your library and citations &middot; generated 28 Oct 2026, 07:09</footer></div><script>
 (function(){
  var REPO='cconroy20/astroph-digest', API='https://api.github.com/repos/'+REPO+'/contents/data/votes.json';
  var b=document.body, today=b.dataset.date, isIndex=!!b.dataset.index;
@@ -900,10 +900,10 @@ MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\
  function runs(){return gh(WF+'/runs?per_page=10').then(function(r){return r.json()}).then(function(j){return j.workflow_runs||[]})}
  function watch(pick){return new Promise(function(res,rej){var n=0;
   (function poll(){
-   if(++n>90) return rej(new Error('timed out'));    /* 15 minutes */
+   if(++n>180) return rej(new Error('timed out'));    /* 15 minutes */
    runs().then(function(rs){var run=pick(rs);
     if(run&&run.status==='completed') return run.conclusion==='success'?res():rej(new Error(run.conclusion));
-    setTimeout(poll,10000)}).catch(function(){setTimeout(poll,10000)})})()})}
+    setTimeout(poll,5000)}).catch(function(){setTimeout(poll,5000)})})()})}
  function update(btn){
   var sent=false, waits=0;
   function done(msg){btn.textContent=msg; setTimeout(function(){btn.textContent='Update'; btn.disabled=false},5000)}
