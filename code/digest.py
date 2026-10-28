@@ -46,6 +46,8 @@ a:focus-visible,.tg:focus-visible{outline:2px solid var(--accent);outline-offset
 .mast .count{color:var(--ink-2)}
 .mast .arch{font-size:14px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);text-decoration:none}
 .mast .arch:hover{text-decoration:underline;text-underline-offset:4px}
+.mast button.arch{appearance:none;background:none;border:0;padding:0;margin:0;font-family:inherit;cursor:pointer}
+.mast button.arch:disabled{color:var(--ink-3);cursor:default;text-decoration:none}
 
 /* entries */
 .entry{padding:28px 0 26px;border-top:1px solid var(--rule)}
@@ -173,8 +175,8 @@ PAGE_JS = """
  /* ---------- setup panel: #setup ---------- */
  if(location.hash==='#setup'){
   var box=document.createElement('section'); box.className='setup';
-  box.innerHTML='<p><b>Voting setup.</b> Paste a GitHub fine-grained token with <i>Contents: read and write</i> access to '
-   +REPO+' only. It is kept in this browser and sent only to GitHub.</p>'
+  box.innerHTML='<p><b>Voting setup.</b> Paste a GitHub fine-grained token with <i>Contents: read and write</i> (votes) and '
+   +'<i>Actions: read and write</i> (the Update button) access to '+REPO+' only. It is kept in this browser and sent only to GitHub.</p>'
    +'<p><input id="tok" type="password" autocomplete="off" placeholder="github_pat_\\u2026"> <button id="tok-save">Save</button> '
    +'<button id="tok-clear">Remove token</button> <span id="tok-msg"></span></p>';
   $('.mast').after(box);
@@ -183,6 +185,37 @@ PAGE_JS = """
     setTimeout(function(){location.hash=''; location.reload()},800)})
    .catch(function(e){token=get('arxivDigest.token'); $('#tok-msg').textContent='Not saved: '+e.message+'.'})};
   $('#tok-clear').onclick=function(){set('arxivDigest.token',null); token=null; $('#tok-msg').textContent='Token removed from this browser.'};
+ }
+
+ /* ---------- Update: run the daily job now, then reload if it published a newer listing ---------- */
+ var WF='https://api.github.com/repos/'+REPO+'/actions/workflows/daily.yml';
+ function gh(url,opt){opt=opt||{}; opt.cache='no-store';
+  opt.headers={'Authorization':'Bearer '+token,'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'}; return fetch(url,opt)}
+ function update(btn){
+  var t0=Date.now()-60000;   /* allow for clock skew between this computer and GitHub */
+  function done(msg){btn.textContent=msg; setTimeout(function(){btn.textContent='Update'; btn.disabled=false},5000)}
+  btn.disabled=true; btn.textContent='Updating\\u2026';
+  gh(WF+'/dispatches',{method:'POST',body:JSON.stringify({ref:'main'})}).then(function(r){
+   if(r.status===401||r.status===403||r.status===404) throw new Error('token needs Actions access');
+   if(!r.ok) throw new Error('GitHub error '+r.status);
+   return new Promise(function(res,rej){var n=0;
+    (function poll(){
+     if(++n>90) return rej(new Error('timed out'));    /* 15 minutes */
+     gh(WF+'/runs?event=workflow_dispatch&per_page=10').then(function(r){return r.json()}).then(function(j){
+      /* runs come newest first: the oldest one started since the click is this one */
+      var run=(j.workflow_runs||[]).filter(function(x){return Date.parse(x.created_at)>=t0}).pop();
+      if(run&&run.status==='completed') return run.conclusion==='success'?res():rej(new Error(run.conclusion));
+      setTimeout(poll,10000)}).catch(function(){setTimeout(poll,10000)})})()})
+  }).then(function(){return fetch('days/index.json',{cache:'no-store'}).then(function(r){return r.json()})})
+  .then(function(idx){
+   if(idx[idx.length-1]>today){btn.textContent='Loading\\u2026'; return fetch(location.href,{cache:'reload'}).then(function(){location.reload()})}
+   done('No new listing yet')})
+  .catch(function(e){done('Update failed ('+e.message+')')});
+ }
+ if(token&&isIndex){
+  var ub=document.createElement('button'); ub.className='arch'; ub.textContent='Update';
+  ub.title='Fetch the latest arXiv listing now (takes a few minutes)'; ub.onclick=function(){update(ub)};
+  var pd=$('.mast .arch'); pd.parentNode.insertBefore(ub,pd);
  }
 
  /* ---------- catch-up: merge every listing since the last one read ---------- */

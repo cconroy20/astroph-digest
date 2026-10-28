@@ -2,6 +2,9 @@ name: Daily digest
 
 on:
   schedule:
+    # The on-time trigger is EXTERNAL: cron-job.org POSTs a workflow_dispatch at 12:10 am America/New_York, Mon-Fri
+    # (GitHub's own schedules ran ~5 h late every day in Oct 2026); the page's Update button sends the same request.
+    # The schedules below stay as a backup.
     # GitHub runs schedules best-effort and may drop them under load, so the job is triggered four times;
     # the first run that fires builds the digest, later ones find it done and only republish.
     # 04:07 / 05:37 / 07:17 / 09:47 UTC = 12:07 / 1:37 / 3:17 / 5:47 am EDT (an hour earlier in EST, the first at
