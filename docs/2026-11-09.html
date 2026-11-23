@@ -586,7 +586,7 @@ MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\
 <div class="act"><span class="vote"><button class="vb vu" title="More like this" aria-label="Upvote"><svg viewBox="0 0 14 12" width="15" height="13" aria-hidden="true"><path d="M7 1.2 12.8 10.8H1.2Z"/></svg></button><button class="vb vd" title="Less like this" aria-label="Downvote"><svg viewBox="0 0 14 12" width="15" height="13" aria-hidden="true"><path d="M1.2 1.2H12.8L7 10.8Z"/></svg></button></span><button class="tg" data-p="ab">Abstract</button><a class="pdf" href="https://arxiv.org/pdf/2611.09829" target="_blank" rel="noopener">PDF</a><span class="dtag">Mon 9 Nov</span></div>
 <div class="ab" hidden>Non-Gaussian perturbations generated during inflation can often be described perturbatively via integrals of kernels acting on Gaussian fields. In this work, we investigate, in a model-independent manner, whether these kernels can produce parity-violating (PV) contributions to the trispectrum, and which Wick's theorem contraction configurations of the Gaussian fields lead to them. In detail, we evaluate all possible contraction configurations arising from the third- and second-order density perturbations. We find that, for the third-order perturbations, only one configuration can support PV contributions, as it retains three independent wave-vectors. In contrast, none of the four second-order perturbation contraction configurations can produce a PV contribution under statistical isotropy. These results offer a first step toward deriving kernels from inflationary models capable of generating a PV trispectrum. Such kernels could then be used to perform PV searches with current and upcoming galaxy redshift surveys such as DESI, Roman, SPHEREx, and Euclid, and photometric efforts such as LSST. Our results also offer a guide for exploration of PV with CMB data-sets such as Planck.</div>
 
-</article></main><footer>Ranked by indus against 5,380 papers from your library and citations &middot; generated 9 Nov 2026, 12:48</footer></div><script>
+</article></main><footer>Ranked by indus against 5,380 papers from your library and citations &middot; generated 22 Nov 2026, 19:23</footer></div><script>
 (function(){
  var REPO='cconroy20/astroph-digest', API='https://api.github.com/repos/'+REPO+'/contents/data/votes.json';
  var b=document.body, today=b.dataset.date, isIndex=!!b.dataset.index;
@@ -746,8 +746,9 @@ MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\
  if(token){
   b.classList.add('can-vote'); paint();
   readRemote().then(function(rem){state=rem.data; state.votes=state.votes||{}; paint();
-   /* the repo keeps the last-read date, so catch-up survives a browser that wiped its storage */
-   var seen=[rem.data.last_seen,pending.last_seen].filter(Boolean).sort().pop()||get('arxivDigest.seen');
+   /* the repo keeps the last-read date, so catch-up survives a browser that wiped its storage; the latest of the
+      three wins (listings read here while the token was missing never reached the repo) */
+   var seen=[rem.data.last_seen,pending.last_seen,get('arxivDigest.seen')].filter(Boolean).sort().pop();
    if(isIndex) catchup(seen); if(Object.keys(pending.votes).length) schedule(1000)})
   .catch(function(e){status('Votes not saved ('+e.message+').',true); if(isIndex) catchup(get('arxivDigest.seen'))});
  } else if(isIndex) catchup(get('arxivDigest.seen'));

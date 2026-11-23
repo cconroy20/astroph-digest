@@ -740,7 +740,7 @@ MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\
 <div class="act"><span class="vote"><button class="vb vu" title="More like this" aria-label="Upvote"><svg viewBox="0 0 14 12" width="15" height="13" aria-hidden="true"><path d="M7 1.2 12.8 10.8H1.2Z"/></svg></button><button class="vb vd" title="Less like this" aria-label="Downvote"><svg viewBox="0 0 14 12" width="15" height="13" aria-hidden="true"><path d="M1.2 1.2H12.8L7 10.8Z"/></svg></button></span><button class="tg" data-p="ab">Abstract</button><button class="tg" data-p="fg">Figures</button><a class="pdf" href="https://arxiv.org/pdf/2611.05504" target="_blank" rel="noopener">PDF</a><span class="dtag">Thu 5 Nov</span></div>
 <div class="ab" hidden>We discuss a possible early Universe scenario, where radiation era is interrupted by the epoch of domination of domain walls eventually annihilating into particles. During this period the Universe undergoes accelerated expansion, while the comoving correlation length of the domain wall network remains constant. The network serves as a source of tensor modes, which get frozen upon exiting the horizon similarly to the case of inflationary fluctuations. The modes re-enter the horizon during the subsequent stage of radiation domination and since then contribute to the gravitational wave background. The spectral shape of gravitational waves predicted in this scenario is markedly different compared to the case of domain walls remaining sub-dominant all the way till annihilation. These gravitational waves are strong enough to be observed with present-day and future facilities in a broad range of frequencies. In particular, their energy density is sufficient to produce a significant impact on the effective number of neutrino species, unless the duration of wall domination is suitably constrained.</div>
 <div class="fg" hidden><figure class="fig"><div class="im"><img data-src="https://arxiv.org/html/2611.05504v1/gwspectrum.svg" alt=""></div><figcaption><b>Figure 1.</b> Present-day GW spectra described by Eq.</figcaption><div class="full" hidden><div class="ims"><img data-src="https://arxiv.org/html/2611.05504v1/gwspectrum.svg" alt=""></div><p class="cap"><b>Figure 1.</b> Present-day GW spectra described by Eq. (56) are demonstrated assuming three choices of parameters $(\sigma_{wall}^{1/3}/\mbox{GeV},\ln N)$, which have been set to $(1.0\times 10^{9},6)$ in the case 1, to $(1.4\cdot 10^{7},5)$ in the case 2, and to $(1.15\cdot 10^{11},4)$ in the case 3. The shaded areas correspond to regions accessible by various current and future GW observatories.</p></div></figure></div>
-</article></main><footer>Ranked by indus against 5,380 papers from your library and citations &middot; generated 5 Nov 2026, 11:49</footer></div><script>
+</article></main><footer>Ranked by indus against 5,380 papers from your library and citations &middot; generated 22 Nov 2026, 19:23</footer></div><script>
 (function(){
  var REPO='cconroy20/astroph-digest', API='https://api.github.com/repos/'+REPO+'/contents/data/votes.json';
  var b=document.body, today=b.dataset.date, isIndex=!!b.dataset.index;
@@ -900,8 +900,9 @@ MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\
  if(token){
   b.classList.add('can-vote'); paint();
   readRemote().then(function(rem){state=rem.data; state.votes=state.votes||{}; paint();
-   /* the repo keeps the last-read date, so catch-up survives a browser that wiped its storage */
-   var seen=[rem.data.last_seen,pending.last_seen].filter(Boolean).sort().pop()||get('arxivDigest.seen');
+   /* the repo keeps the last-read date, so catch-up survives a browser that wiped its storage; the latest of the
+      three wins (listings read here while the token was missing never reached the repo) */
+   var seen=[rem.data.last_seen,pending.last_seen,get('arxivDigest.seen')].filter(Boolean).sort().pop();
    if(isIndex) catchup(seen); if(Object.keys(pending.votes).length) schedule(1000)})
   .catch(function(e){status('Votes not saved ('+e.message+').',true); if(isIndex) catchup(get('arxivDigest.seen'))});
  } else if(isIndex) catchup(get('arxivDigest.seen'));

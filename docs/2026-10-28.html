@@ -782,7 +782,7 @@ MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\
 <div class="act"><span class="vote"><button class="vb vu" title="More like this" aria-label="Upvote"><svg viewBox="0 0 14 12" width="15" height="13" aria-hidden="true"><path d="M7 1.2 12.8 10.8H1.2Z"/></svg></button><button class="vb vd" title="Less like this" aria-label="Downvote"><svg viewBox="0 0 14 12" width="15" height="13" aria-hidden="true"><path d="M1.2 1.2H12.8L7 10.8Z"/></svg></button></span><button class="tg" data-p="ab">Abstract</button><a class="pdf" href="https://arxiv.org/pdf/2610.36591" target="_blank" rel="noopener">PDF</a><span class="dtag">Wed 28 Oct</span></div>
 <div class="ab" hidden>In warm inflation, the primordial fluctuations are driven by random kicks from a hot radiation bath. Two features of these kicks matter: how long the bath remembers them, which shapes the power spectrum, and how their strengths are spread, which controls the rare, extreme fluctuations. In this paper, we investigate how primordial black holes and the accompanying induced gravitational waves can be used to discriminate between these two features. We use a simple model inspired by warm inflation, in which independent kicks of random strength add up to a narrow peak in the power spectrum. At leading order, the induced gravitational wave depends only on the power spectrum and is therefore insensitive to how the kicks are distributed. However, the black holes are very sensitive to these rare large fluctuations. Hence, two baths can yield the same gravitational wave signal while forming black holes at very different rates. A modest kurtosis range of 0.1 to 0.3 enhances black-hole formation by factors of ten to a million at fixed gravitational-wave amplitude, the larger factors for the rarer black holes. Counting peaks rather than all points, or widening the spectrum, lowers the enhancement by at most a factor of about four. In general a change in the power affects both phenomena, while the kurtosis affects only the black hole production.</div>
 
-</article></main><footer>Ranked by indus against 5,380 papers from your library and citations &middot; generated 28 Oct 2026, 07:09</footer></div><script>
+</article></main><footer>Ranked by indus against 5,380 papers from your library and citations &middot; generated 22 Nov 2026, 19:23</footer></div><script>
 (function(){
  var REPO='cconroy20/astroph-digest', API='https://api.github.com/repos/'+REPO+'/contents/data/votes.json';
  var b=document.body, today=b.dataset.date, isIndex=!!b.dataset.index;
@@ -942,8 +942,9 @@ MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\
  if(token){
   b.classList.add('can-vote'); paint();
   readRemote().then(function(rem){state=rem.data; state.votes=state.votes||{}; paint();
-   /* the repo keeps the last-read date, so catch-up survives a browser that wiped its storage */
-   var seen=[rem.data.last_seen,pending.last_seen].filter(Boolean).sort().pop()||get('arxivDigest.seen');
+   /* the repo keeps the last-read date, so catch-up survives a browser that wiped its storage; the latest of the
+      three wins (listings read here while the token was missing never reached the repo) */
+   var seen=[rem.data.last_seen,pending.last_seen,get('arxivDigest.seen')].filter(Boolean).sort().pop();
    if(isIndex) catchup(seen); if(Object.keys(pending.votes).length) schedule(1000)})
   .catch(function(e){status('Votes not saved ('+e.message+').',true); if(isIndex) catchup(get('arxivDigest.seen'))});
  } else if(isIndex) catchup(get('arxivDigest.seen'));

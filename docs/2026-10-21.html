@@ -803,7 +803,7 @@ MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\
 <div class="act"><span class="vote"><button class="vb vu" title="More like this" aria-label="Upvote"><svg viewBox="0 0 14 12" width="15" height="13" aria-hidden="true"><path d="M7 1.2 12.8 10.8H1.2Z"/></svg></button><button class="vb vd" title="Less like this" aria-label="Downvote"><svg viewBox="0 0 14 12" width="15" height="13" aria-hidden="true"><path d="M1.2 1.2H12.8L7 10.8Z"/></svg></button></span><button class="tg" data-p="ab">Abstract</button><a class="pdf" href="https://arxiv.org/pdf/2610.28608" target="_blank" rel="noopener">PDF</a><span class="dtag">Wed 21 Oct</span></div>
 <div class="ab" hidden>We derive explicit expressions for the primordial scalar and tensor spectra at arbitrary finite order $p$ in the slow-roll expansion, valid both for canonical single-field inflation and $k$-inflation. At any order, the spectra are determined by known combinations of slow-roll parameters weighted by universal coefficients entirely fixed by the free de Sitter solutions, without requiring perturbatively corrected mode functions. Using these spectra, we obtain closed-form consistency relations that connect the tensor tilt $n_t$ and its runnings $\alpha_n^t\equiv d^n n_t/d(\ln k)^n$ to the tensor-to-scalar ratio $r$, the scalar spectral index $n_s$, and its runnings $\alpha_n^s\equiv d^n(n_s-1)/d(\ln k)^n$. The consistency relations are valid for arbitrary $n\geq 0$ and any finite $p\geq 0$, without recursion over lower-order relations. For $k$-inflation, they additionally depend on the scalar sound speed and its scale derivatives. We develop an algorithm that generates both the spectra and consistency relations for any pair $(n,p)$. We reproduce known results through next-to-next-to-next-to-leading order (N3LO) and extend the explicit calculations up to N10LO.</div>
 
-</article></main><footer>Ranked by indus against 5,380 papers from your library and citations &middot; generated 28 Oct 2026, 07:09</footer></div><script>
+</article></main><footer>Ranked by indus against 5,380 papers from your library and citations &middot; generated 22 Nov 2026, 19:23</footer></div><script>
 (function(){
  var REPO='cconroy20/astroph-digest', API='https://api.github.com/repos/'+REPO+'/contents/data/votes.json';
  var b=document.body, today=b.dataset.date, isIndex=!!b.dataset.index;
@@ -963,8 +963,9 @@ MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\
  if(token){
   b.classList.add('can-vote'); paint();
   readRemote().then(function(rem){state=rem.data; state.votes=state.votes||{}; paint();
-   /* the repo keeps the last-read date, so catch-up survives a browser that wiped its storage */
-   var seen=[rem.data.last_seen,pending.last_seen].filter(Boolean).sort().pop()||get('arxivDigest.seen');
+   /* the repo keeps the last-read date, so catch-up survives a browser that wiped its storage; the latest of the
+      three wins (listings read here while the token was missing never reached the repo) */
+   var seen=[rem.data.last_seen,pending.last_seen,get('arxivDigest.seen')].filter(Boolean).sort().pop();
    if(isIndex) catchup(seen); if(Object.keys(pending.votes).length) schedule(1000)})
   .catch(function(e){status('Votes not saved ('+e.message+').',true); if(isIndex) catchup(get('arxivDigest.seen'))});
  } else if(isIndex) catchup(get('arxivDigest.seen'));

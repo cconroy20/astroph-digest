@@ -266,8 +266,9 @@ PAGE_JS = """
  if(token){
   b.classList.add('can-vote'); paint();
   readRemote().then(function(rem){state=rem.data; state.votes=state.votes||{}; paint();
-   /* the repo keeps the last-read date, so catch-up survives a browser that wiped its storage */
-   var seen=[rem.data.last_seen,pending.last_seen].filter(Boolean).sort().pop()||get('arxivDigest.seen');
+   /* the repo keeps the last-read date, so catch-up survives a browser that wiped its storage; the latest of the
+      three wins (listings read here while the token was missing never reached the repo) */
+   var seen=[rem.data.last_seen,pending.last_seen,get('arxivDigest.seen')].filter(Boolean).sort().pop();
    if(isIndex) catchup(seen); if(Object.keys(pending.votes).length) schedule(1000)})
   .catch(function(e){status('Votes not saved ('+e.message+').',true); if(isIndex) catchup(get('arxivDigest.seen'))});
  } else if(isIndex) catchup(get('arxivDigest.seen'));
